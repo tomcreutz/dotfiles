@@ -50,5 +50,18 @@ setopt PUSHD_IGNORE_DUPS
 # Case insensitive completion
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 
-# Load local config if exists
+# Load local config if exists (loaded early so it can set ZELLIJ_AUTO_START=0)
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
+
+# Auto-start zellij
+# - First terminal: creates session "main"
+# - Additional terminals: shows session picker (attach or create new)
+# - Skipped in VSCode, when already in zellij, or non-interactive shells
+# - Disable by setting ZELLIJ_AUTO_START=0 in ~/.zshrc.local
+if [[ "$ZELLIJ_AUTO_START" != "0" ]] && [[ -z "$ZELLIJ" ]] && command -v zellij &>/dev/null && [[ -o interactive ]] && [[ "$TERM_PROGRAM" != "vscode" ]]; then
+    if [[ -z "$(zellij list-sessions 2>/dev/null)" ]]; then
+        zellij attach -c main
+    else
+        zellij
+    fi
+fi

@@ -2,11 +2,6 @@
 TERM = "xterm-256color"
 WINIT_X11_SCALE_FACTOR = "1"
 
-# Launch Zellij automatically
-[terminal.shell]
-program = "zellij"
-args = ["-l", "welcome"]
-
 [window]
 padding = { x = 10, y = 10 }
 decorations = "full"

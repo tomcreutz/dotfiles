@@ -59,14 +59,44 @@ link_zsh_config() {
 }
 
 set_default_shell() {
-    if [ "$SHELL" = "$(which zsh)" ]; then
+    local zsh_path
+    zsh_path="$(which zsh)"
+
+    if [ "$SHELL" = "$zsh_path" ]; then
         success "zsh is already the default shell"
         return
     fi
 
     info "Setting zsh as default shell..."
-    chsh -s "$(which zsh)"
-    success "zsh set as default shell (restart terminal to take effect)"
+
+    # Check if user exists in local /etc/passwd (not LDAP/domain)
+    if grep -q "^$(whoami):" /etc/passwd 2>/dev/null; then
+        chsh -s "$zsh_path"
+        success "zsh set as default shell (restart terminal to take effect)"
+    else
+        # LDAP/domain user - chsh won't work, add zsh exec to login profile
+        warn "Cannot use chsh (LDAP/domain account - user not in /etc/passwd)"
+        info "Adding zsh auto-start to login profile as workaround..."
+
+        # Use .bash_profile if it exists, otherwise use .profile (which bash reads as fallback)
+        local profile_file="$HOME/.bash_profile"
+        [ ! -f "$profile_file" ] && profile_file="$HOME/.profile"
+
+        local zsh_exec_block="
+# Auto-start zsh for LDAP/domain users (added by dotfiles installer)
+if [ -x \"$zsh_path\" ] && [ -z \"\$ZSH_STARTED\" ]; then
+    export ZSH_STARTED=1
+    export SHELL=\"$zsh_path\"
+    exec \"$zsh_path\" -l
+fi"
+
+        if grep -q "Auto-start zsh" "$profile_file" 2>/dev/null; then
+            success "zsh auto-start already configured in $profile_file"
+        else
+            echo "$zsh_exec_block" >> "$profile_file"
+            success "Added zsh auto-start to $profile_file (restart terminal to take effect)"
+        fi
+    fi
 }
 
 install_core_packages() {
