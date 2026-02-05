@@ -60,6 +60,108 @@ install_spotify() {
     success "Spotify installed"
 }
 
+install_obsidian() {
+    info "Installing Obsidian..."
+
+    if has_cmd obsidian; then
+        success "Obsidian already installed"
+        return
+    fi
+
+    if [ "$PKG_MANAGER" = "apt" ]; then
+        # Download latest .deb from GitHub releases
+        local latest_url
+        latest_url=$(curl -s https://api.github.com/repos/obsidianmd/obsidian-releases/releases/latest | grep "browser_download_url.*amd64.deb" | cut -d '"' -f 4)
+        curl -fsSL -o /tmp/obsidian.deb "$latest_url"
+        sudo apt install -y /tmp/obsidian.deb
+        rm /tmp/obsidian.deb
+    elif [ "$PKG_MANAGER" = "pacman" ]; then
+        # Obsidian is in AUR
+        if has_cmd paru; then
+            paru -S --noconfirm --needed obsidian
+        elif has_cmd yay; then
+            yay -S --noconfirm --needed obsidian
+        else
+            warn "Obsidian requires an AUR helper (paru or yay). Skipping."
+            return
+        fi
+    fi
+
+    success "Obsidian installed"
+}
+
+install_element() {
+    info "Installing Element..."
+
+    if has_cmd element-desktop; then
+        success "Element already installed"
+        return
+    fi
+
+    if [ "$PKG_MANAGER" = "apt" ]; then
+        sudo wget -O /usr/share/keyrings/element-io-archive-keyring.gpg https://packages.element.io/debian/element-io-archive-keyring.gpg
+        echo "deb [signed-by=/usr/share/keyrings/element-io-archive-keyring.gpg] https://packages.element.io/debian/ default main" | sudo tee /etc/apt/sources.list.d/element-io.list
+        sudo apt update
+        apt_install element-desktop
+    elif [ "$PKG_MANAGER" = "pacman" ]; then
+        # Element is in AUR
+        if has_cmd paru; then
+            paru -S --noconfirm --needed element-desktop
+        elif has_cmd yay; then
+            yay -S --noconfirm --needed element-desktop
+        else
+            warn "Element requires an AUR helper (paru or yay). Skipping."
+            return
+        fi
+    fi
+
+    success "Element installed"
+}
+
+install_zoom() {
+    info "Installing Zoom..."
+
+    if has_cmd zoom; then
+        success "Zoom already installed"
+        return
+    fi
+
+    if [ "$PKG_MANAGER" = "apt" ]; then
+        curl -fsSL -o /tmp/zoom.deb https://zoom.us/client/latest/zoom_amd64.deb
+        sudo apt install -y /tmp/zoom.deb
+        rm /tmp/zoom.deb
+    elif [ "$PKG_MANAGER" = "pacman" ]; then
+        # Zoom is in AUR
+        if has_cmd paru; then
+            paru -S --noconfirm --needed zoom
+        elif has_cmd yay; then
+            yay -S --noconfirm --needed zoom
+        else
+            warn "Zoom requires an AUR helper (paru or yay). Skipping."
+            return
+        fi
+    fi
+
+    success "Zoom installed"
+}
+
+install_gimp() {
+    info "Installing GIMP..."
+
+    if has_cmd gimp; then
+        success "GIMP already installed"
+        return
+    fi
+
+    if [ "$PKG_MANAGER" = "apt" ]; then
+        apt_install gimp
+    elif [ "$PKG_MANAGER" = "pacman" ]; then
+        pacman_install gimp
+    fi
+
+    success "GIMP installed"
+}
+
 # Main
 main() {
     echo ""
@@ -70,6 +172,10 @@ main() {
 
     install_google_chrome
     install_spotify
+    install_obsidian
+    install_element
+    install_zoom
+    install_gimp
 
     success "Desktop applications setup complete!"
 }

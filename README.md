@@ -52,6 +52,10 @@ Install specific modules only:
 ### Desktop Apps (`scripts/apps.sh`)
 - **Google Chrome** - Web browser
 - **Spotify** - Music streaming
+- **Obsidian** - Note-taking and knowledge base
+- **Element** - Matrix chat client
+- **Zoom** - Video conferencing
+- **GIMP** - Image editor
 
 ### AI Coding Assistants (`scripts/ai.sh`)
 - **Claude Code** - Anthropic's AI coding assistant CLI
