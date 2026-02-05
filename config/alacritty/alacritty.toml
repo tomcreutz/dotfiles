@@ -44,6 +44,9 @@ magenta = "#f5c2e7"
 cyan    = "#94e2d5"
 white   = "#a6adc8"
 
+[terminal]
+shell = { program = "/usr/bin/zsh", args = ["-l"] }
+
 [font]
 size = 12
 

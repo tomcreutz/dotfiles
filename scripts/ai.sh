@@ -57,6 +57,13 @@ install_pi() {
         error "npm is required to install pi. Please install Node.js first."
     fi
 
+    # Use user-owned directory for global packages (avoids sudo)
+    if [[ "$(npm config get prefix)" == /usr* ]]; then
+        mkdir -p "$HOME/.local"
+        npm config set prefix "$HOME/.local"
+    fi
+    export PATH="$HOME/.local/bin:$PATH"
+
     npm install -g @mariozechner/pi-coding-agent
 
     success "pi installed"

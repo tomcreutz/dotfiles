@@ -72,7 +72,7 @@ set_default_shell() {
     # Check if user exists in local /etc/passwd (not LDAP/domain)
     if grep -q "^$(whoami):" /etc/passwd 2>/dev/null; then
         chsh -s "$zsh_path"
-        success "zsh set as default shell (restart terminal to take effect)"
+        success "zsh set as default shell (log out and back in to take effect)"
     else
         # LDAP/domain user - chsh won't work, add zsh exec to login profile
         warn "Cannot use chsh (LDAP/domain account - user not in /etc/passwd)"

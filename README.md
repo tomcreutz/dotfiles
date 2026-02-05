@@ -5,14 +5,8 @@ Personal dotfiles for Arch Linux (CachyOS) and Ubuntu systems.
 ## Quick Install
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/tomcreutz/dotfiles/main/install.sh | bash
-```
-
-Or clone and run locally:
-
-```bash
-git clone https://github.com/tomcreutz/dotfiles.git ~/.dotfiles
-cd ~/.dotfiles
+git clone https://github.com/tomcreutz/dotfiles.git ~/dotfiles
+cd ~/dotfiles
 ./install.sh
 ```
 

@@ -19,6 +19,10 @@ source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
+# npm global packages in user directory (avoids sudo for npm install -g)
+export npm_config_prefix="$HOME/.local"
+export PATH="$HOME/.local/bin:$PATH"
+
 # Preferred editor
 export EDITOR='vim'
 
