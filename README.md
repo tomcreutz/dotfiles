@@ -25,6 +25,7 @@ Install specific modules only:
 ./install.sh terminal  # alacritty, zellij, fonts
 ./install.sh dev       # GitHub CLI, Docker, dev tools
 ./install.sh apps      # Chrome, Spotify, desktop apps
+./install.sh ai        # Claude Code, pi (AI assistants)
 ./install.sh all       # Everything (default)
 
 # Multiple modules
@@ -52,6 +53,10 @@ Install specific modules only:
 - **Google Chrome** - Web browser
 - **Spotify** - Music streaming
 
+### AI Coding Assistants (`scripts/ai.sh`)
+- **Claude Code** - Anthropic's AI coding assistant CLI
+- **pi** - AI coding agent (pi.dev)
+
 ## Structure
 
 ```
@@ -62,7 +67,8 @@ dotfiles/
 │   ├── core.sh         # Shell setup
 │   ├── terminal.sh     # Terminal apps
 │   ├── dev.sh          # Dev tools
-│   └── apps.sh         # Desktop apps
+│   ├── apps.sh         # Desktop apps
+│   └── ai.sh           # AI coding assistants
 └── config/
     ├── alacritty/      # Alacritty config
     ├── zellij/         # Zellij config

@@ -16,7 +16,7 @@ export DOTFILES_DIR
 source "$DOTFILES_DIR/scripts/common.sh"
 
 # Available modules
-MODULES=(core terminal dev apps)
+MODULES=(core terminal dev apps ai)
 
 show_help() {
     echo ""
@@ -29,6 +29,7 @@ show_help() {
     echo "  terminal  - alacritty, zellij, fonts"
     echo "  dev       - GitHub CLI, Docker, development tools"
     echo "  apps      - Google Chrome, Spotify, desktop apps"
+    echo "  ai        - Claude Code, pi (AI coding assistants)"
     echo "  all       - Install everything (default)"
     echo ""
     echo "Examples:"
