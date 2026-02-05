@@ -1,0 +1,33 @@
+// ~/.config/zellij/config.kdl
+
+// Use the compact layout (hides keybinding hints) for cleaner look
+// Remove this line to see keybinding hints at the bottom
+default_layout "compact"
+
+// Theme
+theme "catppuccin-mocha"
+
+// Mouse support
+mouse_mode true
+
+// Copy on select
+copy_on_select true
+
+// Scrollback buffer
+scroll_buffer_size 10000
+
+// Simplified UI mode (removes some UI elements)
+simplified_ui true
+
+// Keybindings (Zellij uses modes - press Ctrl+key to enter different modes)
+keybinds {
+    // Quick split shortcuts without entering pane mode
+    shared_except "locked" {
+        bind "Alt |" { NewPane "Right"; }
+        bind "Alt -" { NewPane "Down"; }
+        bind "Alt h" { MoveFocus "Left"; }
+        bind "Alt l" { MoveFocus "Right"; }
+        bind "Alt j" { MoveFocus "Down"; }
+        bind "Alt k" { MoveFocus "Up"; }
+    }
+}

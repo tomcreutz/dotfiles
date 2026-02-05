@@ -78,3 +78,23 @@ get_dotfiles_dir() {
         echo "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
     fi
 }
+
+# Ask user a yes/no question
+# Usage: ask_yes_no "Question?" && do_something
+# Returns 0 (true) for yes, 1 (false) for no
+ask_yes_no() {
+    local prompt="$1"
+    local default="${2:-y}"  # Default to 'yes' if not specified
+    local reply
+
+    if [[ "$default" =~ ^[Yy] ]]; then
+        prompt="$prompt [Y/n] "
+    else
+        prompt="$prompt [y/N] "
+    fi
+
+    read -r -p "$prompt" reply
+    reply=${reply:-$default}
+
+    [[ "$reply" =~ ^[Yy] ]]
+}
