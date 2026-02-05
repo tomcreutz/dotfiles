@@ -54,14 +54,34 @@ zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
 
 # Auto-start zellij
-# - First terminal: creates session "main"
-# - Additional terminals: shows session picker (attach or create new)
-# - Skipped in VSCode, when already in zellij, or non-interactive shells
-# - Disable by setting ZELLIJ_AUTO_START=0 in ~/.zshrc.local
-if [[ "$ZELLIJ_AUTO_START" != "0" ]] && [[ -z "$ZELLIJ" ]] && command -v zellij &>/dev/null && [[ -o interactive ]] && [[ "$TERM_PROGRAM" != "vscode" ]]; then
-    if [[ -z "$(zellij list-sessions 2>/dev/null)" ]]; then
-        zellij attach -c main
-    else
-        zellij
+# Skipped when:
+#   - Already inside zellij ($ZELLIJ is set)
+#   - Non-interactive shell
+#   - Inside VSCode terminal
+#   - SSH from localhost (prevents recursion)
+#   - Zellij not installed
+#   - ZELLIJ_AUTO_START=0 in ~/.zshrc.local
+#
+# Set ZELLIJ_AUTO_EXIT=true to exit shell when zellij exits
+_zellij_auto_start() {
+    [[ "$ZELLIJ_AUTO_START" == "0" ]] && return
+    [[ -n "$ZELLIJ" ]] && return
+    [[ ! -o interactive ]] && return
+    command -v zellij &>/dev/null || return
+    [[ "$TERM_PROGRAM" == "vscode" ]] && return
+
+    # Skip SSH from localhost (prevents infinite recursion)
+    if [[ -n "$SSH_CONNECTION" ]]; then
+        local ssh_source="${SSH_CONNECTION%% *}"
+        [[ "$ssh_source" == "127."* || "$ssh_source" == "::1" ]] && return
     fi
-fi
+
+    # Attach to "main" session or create it
+    if [[ "${ZELLIJ_AUTO_EXIT:-false}" == "true" ]]; then
+        exec zellij attach -c main
+    else
+        zellij attach -c main
+    fi
+}
+_zellij_auto_start
+unset -f _zellij_auto_start
