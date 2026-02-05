@@ -5,23 +5,23 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/common.sh"
 
-install_zsh() {
-    info "Installing zsh..."
-
-    if has_cmd zsh; then
-        success "zsh already installed"
-    else
-        pkg_install zsh
-        success "zsh installed"
-    fi
+# Phase 1: Queue packages for batch install
+collect_core() {
+    info "=== Core Shell Setup (collecting packages) ==="
+    queue_pkg git curl wget zsh
 }
 
-install_oh_my_zsh() {
-    info "Installing Oh My Zsh..."
+# Phase 3: Post-install configuration
+setup_core() {
+    echo ""
+    info "=== Core Shell Setup (configuring) ==="
+    echo ""
 
+    # Install Oh My Zsh
     if [ -d "$HOME/.oh-my-zsh" ]; then
         success "Oh My Zsh already installed"
     else
+        info "Installing Oh My Zsh..."
         sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
         success "Oh My Zsh installed"
     fi
@@ -29,7 +29,6 @@ install_oh_my_zsh() {
     # Install zsh plugins
     ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
 
-    # zsh-autosuggestions
     if [ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]; then
         info "Installing zsh-autosuggestions..."
         git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
@@ -38,7 +37,6 @@ install_oh_my_zsh() {
         success "zsh-autosuggestions already installed"
     fi
 
-    # zsh-syntax-highlighting
     if [ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]; then
         info "Installing zsh-syntax-highlighting..."
         git clone https://github.com/zsh-users/zsh-syntax-highlighting "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
@@ -46,35 +44,26 @@ install_oh_my_zsh() {
     else
         success "zsh-syntax-highlighting already installed"
     fi
-}
 
-link_zsh_config() {
+    # Link .zshrc
     local dotfiles_dir="$(get_dotfiles_dir)"
-
     if [ -f "$dotfiles_dir/config/zsh/.zshrc" ]; then
         info "Linking .zshrc..."
         ln -sf "$dotfiles_dir/config/zsh/.zshrc" "$HOME/.zshrc"
         success "Linked .zshrc"
     fi
-}
 
-set_default_shell() {
+    # Set default shell
     local zsh_path
     zsh_path="$(which zsh)"
 
     if [ "$SHELL" = "$zsh_path" ]; then
         success "zsh is already the default shell"
-        return
-    fi
-
-    info "Setting zsh as default shell..."
-
-    # Check if user exists in local /etc/passwd (not LDAP/domain)
-    if grep -q "^$(whoami):" /etc/passwd 2>/dev/null; then
+    elif grep -q "^$(whoami):" /etc/passwd 2>/dev/null; then
+        info "Setting zsh as default shell..."
         chsh -s "$zsh_path"
         success "zsh set as default shell (log out and back in to take effect)"
     else
-        # LDAP/domain user - chsh won't work, add zsh exec to login profile
         warn "Cannot use chsh (LDAP/domain account - user not in /etc/passwd)"
         info "Adding zsh auto-start to login profile as workaround..."
 
@@ -97,40 +86,15 @@ fi"
             success "Added zsh auto-start to $bashrc_file (restart terminal to take effect)"
         fi
     fi
-}
-
-install_core_packages() {
-    info "Installing core packages..."
-
-    if [ "$PKG_MANAGER" = "apt" ]; then
-        sudo apt update
-        apt_install git curl wget
-    elif [ "$PKG_MANAGER" = "pacman" ]; then
-        sudo pacman -Syu --noconfirm
-        pacman_install git curl wget
-    fi
-
-    success "Core packages installed"
-}
-
-# Main
-main() {
-    echo ""
-    info "=== Core Shell Setup ==="
-    echo ""
-
-    [ -z "$PKG_MANAGER" ] && detect_os
-
-    install_core_packages
-    install_zsh
-    install_oh_my_zsh
-    link_zsh_config
-    set_default_shell
 
     success "Core setup complete!"
 }
 
-# Run main if script is executed directly
+# Run standalone if script is executed directly
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-    main "$@"
+    detect_os
+    collect_core
+    system_update
+    install_queued_packages
+    setup_core
 fi

@@ -5,86 +5,65 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/common.sh"
 
-install_nodejs() {
-    info "Installing Node.js..."
-
-    if has_cmd node; then
-        local node_version
-        node_version=$(node --version | sed 's/v//' | cut -d. -f1)
-        if [ "$node_version" -ge 18 ]; then
-            success "Node.js $(node --version) already installed"
-            return
-        else
-            warn "Node.js version $(node --version) is too old, upgrading..."
-        fi
-    fi
+# Phase 1: Set up repos and queue packages for batch install
+collect_ai() {
+    info "=== AI Coding Assistants Setup (collecting packages) ==="
 
     if [ "$PKG_MANAGER" = "apt" ]; then
-        # Install Node.js 20.x LTS via NodeSource
-        curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-        apt_install nodejs
+        # Set up NodeSource repo for Node.js 20.x LTS
+        if [ ! -f /etc/apt/sources.list.d/nodesource.list ]; then
+            info "Adding NodeSource apt repository..."
+            curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+        fi
+        queue_pkg nodejs
     elif [ "$PKG_MANAGER" = "pacman" ]; then
-        pacman_install nodejs npm
+        queue_pkg nodejs npm
     fi
-
-    success "Node.js $(node --version) installed"
 }
 
-install_claude_code() {
-    info "Installing Claude Code..."
+# Phase 3: Post-install configuration
+setup_ai() {
+    echo ""
+    info "=== AI Coding Assistants Setup (configuring) ==="
+    echo ""
 
+    # Install Claude Code
     if has_cmd claude; then
         success "Claude Code already installed"
-        return
+    else
+        info "Installing Claude Code..."
+        curl -fsSL https://claude.ai/install.sh | bash
+        success "Claude Code installed"
     fi
 
-    # Native installer (recommended, no Node.js required)
-    curl -fsSL https://claude.ai/install.sh | bash
-
-    success "Claude Code installed"
-}
-
-install_pi() {
-    info "Installing pi..."
-
+    # Install pi
     if has_cmd pi; then
         success "pi already installed"
-        return
+    else
+        if ! has_cmd npm; then
+            warn "npm is required to install pi. Skipping."
+        else
+            info "Installing pi..."
+            # Use user-owned directory for global packages (avoids sudo)
+            if [[ "$(npm config get prefix)" == /usr* ]]; then
+                mkdir -p "$HOME/.local"
+                npm config set prefix "$HOME/.local"
+            fi
+            export PATH="$HOME/.local/bin:$PATH"
+
+            npm install -g @mariozechner/pi-coding-agent
+            success "pi installed"
+        fi
     fi
-
-    # Requires Node.js/npm
-    if ! has_cmd npm; then
-        error "npm is required to install pi. Please install Node.js first."
-    fi
-
-    # Use user-owned directory for global packages (avoids sudo)
-    if [[ "$(npm config get prefix)" == /usr* ]]; then
-        mkdir -p "$HOME/.local"
-        npm config set prefix "$HOME/.local"
-    fi
-    export PATH="$HOME/.local/bin:$PATH"
-
-    npm install -g @mariozechner/pi-coding-agent
-
-    success "pi installed"
-}
-
-# Main
-main() {
-    echo ""
-    info "=== AI Coding Assistants Setup ==="
-    echo ""
-
-    [ -z "$PKG_MANAGER" ] && detect_os
-
-    install_nodejs
-    install_claude_code
-    install_pi
 
     success "AI coding assistants setup complete!"
 }
 
-# Run main if script is executed directly
+# Run standalone if script is executed directly
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-    main "$@"
+    detect_os
+    collect_ai
+    system_update
+    install_queued_packages
+    setup_ai
 fi

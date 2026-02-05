@@ -70,6 +70,44 @@ pkg_install() {
     fi
 }
 
+# Package queues (populated by collect_* functions, flushed by install_queued_packages)
+REPO_PACKAGES=()
+AUR_PACKAGES=()
+
+queue_pkg() { REPO_PACKAGES+=("$@"); }
+queue_aur() { AUR_PACKAGES+=("$@"); }
+
+system_update() {
+    info "Updating package database..."
+    if [ "$PKG_MANAGER" = "apt" ]; then
+        sudo apt update
+    elif [ "$PKG_MANAGER" = "pacman" ]; then
+        sudo pacman -Syu --noconfirm
+    fi
+}
+
+install_queued_packages() {
+    # Install standard repo packages in one batch
+    if [ ${#REPO_PACKAGES[@]} -gt 0 ]; then
+        info "Installing ${#REPO_PACKAGES[@]} packages: ${REPO_PACKAGES[*]}"
+        pkg_install "${REPO_PACKAGES[@]}"
+    fi
+    # Install AUR packages in one batch
+    if [ ${#AUR_PACKAGES[@]} -gt 0 ]; then
+        info "Installing ${#AUR_PACKAGES[@]} AUR packages: ${AUR_PACKAGES[*]}"
+        if has_cmd paru; then
+            paru -S --noconfirm --needed "${AUR_PACKAGES[@]}"
+        elif has_cmd yay; then
+            yay -S --noconfirm --needed "${AUR_PACKAGES[@]}"
+        else
+            warn "Skipping AUR packages (no paru/yay): ${AUR_PACKAGES[*]}"
+        fi
+    fi
+    # Reset queues
+    REPO_PACKAGES=()
+    AUR_PACKAGES=()
+}
+
 # Get the dotfiles directory (where this repo is located)
 get_dotfiles_dir() {
     if [ -n "$DOTFILES_DIR" ]; then

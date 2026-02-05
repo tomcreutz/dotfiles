@@ -39,16 +39,32 @@ show_help() {
     echo ""
 }
 
-run_module() {
-    local module="$1"
-    local script="$DOTFILES_DIR/scripts/${module}.sh"
+run_modules() {
+    local modules=("$@")
 
-    if [ -f "$script" ]; then
-        source "$script"
-        main
-    else
-        error "Module not found: $module"
-    fi
+    # Phase 1: Source all modules and collect packages
+    for module in "${modules[@]}"; do
+        local script="$DOTFILES_DIR/scripts/${module}.sh"
+        if [ -f "$script" ]; then
+            source "$script"
+            if declare -f "collect_${module}" &>/dev/null; then
+                "collect_${module}"
+            fi
+        else
+            error "Module not found: $module"
+        fi
+    done
+
+    # Phase 2: Single system update + single batch install
+    system_update
+    install_queued_packages
+
+    # Phase 3: Post-install configuration per module
+    for module in "${modules[@]}"; do
+        if declare -f "setup_${module}" &>/dev/null; then
+            "setup_${module}"
+        fi
+    done
 }
 
 # Main
@@ -75,11 +91,9 @@ main() {
     detect_os
     echo ""
 
-    # Run selected modules
-    for module in "${modules_to_run[@]}"; do
-        run_module "$module"
-        echo ""
-    done
+    # Run selected modules (collect → install → setup)
+    run_modules "${modules_to_run[@]}"
+    echo ""
 
     echo "╔══════════════════════════════════════════╗"
     echo "║         Installation Complete!           ║"
