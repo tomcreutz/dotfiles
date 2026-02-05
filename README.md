@@ -63,9 +63,10 @@ dotfiles/
 │   ├── terminal.sh     # Terminal apps
 │   ├── dev.sh          # Dev tools
 │   └── apps.sh         # Desktop apps
-├── alacritty/          # Alacritty config
-├── zellij/             # Zellij config
-└── zsh/                # Zsh config
+└── config/
+    ├── alacritty/      # Alacritty config
+    ├── zellij/         # Zellij config
+    └── zsh/            # Zsh config
 ```
 
 ## Supported Systems

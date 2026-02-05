@@ -51,9 +51,9 @@ install_oh_my_zsh() {
 link_zsh_config() {
     local dotfiles_dir="$(get_dotfiles_dir)"
 
-    if [ -f "$dotfiles_dir/zsh/.zshrc" ]; then
+    if [ -f "$dotfiles_dir/config/zsh/.zshrc" ]; then
         info "Linking .zshrc..."
-        ln -sf "$dotfiles_dir/zsh/.zshrc" "$HOME/.zshrc"
+        ln -sf "$dotfiles_dir/config/zsh/.zshrc" "$HOME/.zshrc"
         success "Linked .zshrc"
     fi
 }

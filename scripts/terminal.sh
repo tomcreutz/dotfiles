@@ -80,18 +80,18 @@ link_terminal_configs() {
     mkdir -p "$config_dir"
 
     # Alacritty
-    if [ -d "$dotfiles_dir/alacritty" ]; then
+    if [ -d "$dotfiles_dir/config/alacritty" ]; then
         info "Linking alacritty config..."
         rm -rf "$config_dir/alacritty"
-        ln -sf "$dotfiles_dir/alacritty" "$config_dir/alacritty"
+        ln -sf "$dotfiles_dir/config/alacritty" "$config_dir/alacritty"
         success "Linked alacritty config"
     fi
 
     # Zellij
-    if [ -d "$dotfiles_dir/zellij" ]; then
+    if [ -d "$dotfiles_dir/config/zellij" ]; then
         info "Linking zellij config..."
         rm -rf "$config_dir/zellij"
-        ln -sf "$dotfiles_dir/zellij" "$config_dir/zellij"
+        ln -sf "$dotfiles_dir/config/zellij" "$config_dir/zellij"
         success "Linked zellij config"
     fi
 }
