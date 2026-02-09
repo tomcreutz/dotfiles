@@ -69,6 +69,17 @@ setup_terminal() {
         success "Linked zellij config"
     fi
 
+    # Download zjstatus plugin for zellij status bar
+    local zjstatus_dir="$dotfiles_dir/config/zellij/plugins"
+    if [ ! -f "$zjstatus_dir/zjstatus.wasm" ]; then
+        info "Downloading zjstatus plugin..."
+        mkdir -p "$zjstatus_dir"
+        curl -Lo "$zjstatus_dir/zjstatus.wasm" "https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm"
+        success "zjstatus plugin installed"
+    else
+        success "zjstatus plugin already installed"
+    fi
+
     # Set default terminal
     if has_cmd alacritty; then
         echo ""
