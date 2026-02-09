@@ -65,26 +65,7 @@ setup_core() {
         success "zsh set as default shell (log out and back in to take effect)"
     else
         warn "Cannot use chsh (LDAP/domain account - user not in /etc/passwd)"
-        info "Adding zsh auto-start to login profile as workaround..."
-
-        local bashrc_file="$HOME/.bashrc"
-        local zsh_exec_block="
-# Auto-start zsh for LDAP/domain users (set NOZSH=1 to disable)
-if [ -z \"\$NOZSH\" ] && [ \"\$TERM\" = \"xterm\" -o \"\$TERM\" = \"xterm-256color\" -o \"\$TERM\" = \"screen\" ] && type zsh &>/dev/null; then
-    export SHELL=\"$zsh_path\"
-    if shopt -q login_shell; then
-        exec zsh -l
-    else
-        exec zsh
-    fi
-fi"
-
-        if grep -q "Auto-start zsh" "$bashrc_file" 2>/dev/null; then
-            success "zsh auto-start already configured in $bashrc_file"
-        else
-            echo "$zsh_exec_block" >> "$bashrc_file"
-            success "Added zsh auto-start to $bashrc_file (restart terminal to take effect)"
-        fi
+        info "zsh will be used automatically via your terminal emulator config"
     fi
 
     success "Core setup complete!"
