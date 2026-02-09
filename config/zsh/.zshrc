@@ -80,11 +80,10 @@ _zellij_auto_start() {
         [[ "$ssh_source" == "127."* || "$ssh_source" == "::1" ]] && return
     fi
 
-    # Attach to "main" session or create it
     if [[ "${ZELLIJ_AUTO_EXIT:-false}" == "true" ]]; then
-        exec zellij attach -c main
+        exec zellij
     else
-        zellij attach -c main
+        zellij
     fi
 }
 _zellij_auto_start
