@@ -23,6 +23,9 @@ source $ZSH/oh-my-zsh.sh
 export npm_config_prefix="$HOME/.local"
 export PATH="$HOME/.local/bin:$PATH"
 
+# Dev Containers CLI
+export PATH="$HOME/.devcontainers/bin:$PATH"
+
 # Preferred editor
 export EDITOR='vim'
 

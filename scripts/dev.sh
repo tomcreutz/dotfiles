@@ -97,6 +97,15 @@ setup_dev() {
         fi
     fi
 
+    # Install Dev Containers CLI
+    if [ -x "$HOME/.devcontainers/bin/devcontainer" ]; then
+        success "Dev Containers CLI already installed"
+    else
+        info "Installing Dev Containers CLI..."
+        curl -fsSL https://raw.githubusercontent.com/devcontainers/cli/main/scripts/install.sh | sh
+        success "Dev Containers CLI installed"
+    fi
+
     success "Development tools setup complete!"
 }
 
