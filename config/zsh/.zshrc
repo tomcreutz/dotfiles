@@ -86,7 +86,7 @@ _zellij_auto_start() {
     if [[ "${ZELLIJ_AUTO_EXIT:-false}" == "true" ]]; then
         exec zellij
     else
-        zellij
+        zellij; stty sane; tput reset
     fi
 }
 _zellij_auto_start
