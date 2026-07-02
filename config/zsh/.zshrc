@@ -19,9 +19,15 @@ source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
-# npm global packages in user directory (avoids sudo for npm install -g)
-export npm_config_prefix="$HOME/.local"
+# User-local binaries
+# Note: npm_config_prefix conflicts with nvm, so do not export it globally.
+unset npm_config_prefix NPM_CONFIG_PREFIX
 export PATH="$HOME/.local/bin:$PATH"
+
+# nvm / Node.js (default set with: nvm alias default 24)
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 # Dev Containers CLI
 export PATH="$HOME/.devcontainers/bin:$PATH"
