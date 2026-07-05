@@ -79,7 +79,7 @@ unfocused_hollow = true
 thickness = 0.15
 
 [mouse]
-hide_when_typing = true
+hide_when_typing = false
 
 [[mouse.bindings]]
 mouse = "Middle"

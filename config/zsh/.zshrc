@@ -63,21 +63,25 @@ setopt PUSHD_IGNORE_DUPS
 # Case insensitive completion
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 
-# Load local config if exists (loaded early so it can set ZELLIJ_AUTO_START=0)
+# Load local config if exists (loaded early so it can override defaults)
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
 
-# Auto-start zellij
+# Zellij is opt-in by default. Start it manually with `zj`/`zellij` when needed.
+# Set ZELLIJ_AUTO_START=1 in ~/.zshrc.local to restore auto-start behavior.
+: ${ZELLIJ_AUTO_START:=0}
+
+# Auto-start zellij when explicitly enabled.
 # Skipped when:
+#   - ZELLIJ_AUTO_START is not 1
 #   - Already inside zellij ($ZELLIJ is set)
 #   - Non-interactive shell
 #   - Inside VSCode terminal
 #   - SSH from localhost (prevents recursion)
 #   - Zellij not installed
-#   - ZELLIJ_AUTO_START=0 in ~/.zshrc.local
 #
 # Set ZELLIJ_AUTO_EXIT=true to exit shell when zellij exits
 _zellij_auto_start() {
-    [[ "$ZELLIJ_AUTO_START" == "0" ]] && return
+    [[ "$ZELLIJ_AUTO_START" == "1" ]] || return
     [[ -n "$ZELLIJ" ]] && return
     [[ ! -o interactive ]] && return
     command -v zellij &>/dev/null || return
