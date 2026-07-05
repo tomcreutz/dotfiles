@@ -1,0 +1,18 @@
+{
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.5",
+  "compaction": {
+    "enabled": false
+  },
+  "hideThinkingBlock": true,
+  "defaultThinkingLevel": "high",
+  "packages": [
+    "npm:@marckrenn/pi-sub-bar",
+    "npm:pi-web-access",
+    "npm:@aliou/pi-guardrails",
+    "npm:@majorgilles/pi-grill-me",
+    "npm:@juicesharp/rpiv-ask-user-question",
+    "npm:pi-sidequest"
+  ],
+  "theme": "dark"
+}

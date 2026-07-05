@@ -54,6 +54,9 @@ Install specific modules only:
 ### AI Coding Assistants (`scripts/ai.sh`)
 - **Claude Code** - Anthropic's AI coding assistant CLI
 - **pi** - AI coding agent (pi.dev)
+  - Links shared config from `config/pi/agent/`
+  - Installs extension packages listed in `config/pi/agent/settings.json`
+  - Does **not** sync secrets or state (`auth.json`, `sessions/`, `cache/`, `trust.json`, installed `npm/`/`git/` package caches)
 
 ## Structure
 
@@ -69,6 +72,7 @@ dotfiles/
 │   └── ai.sh           # AI coding assistants
 └── config/
     ├── alacritty/      # Alacritty config
+    ├── pi/             # pi settings, models, extensions, prompts, skills, themes
     ├── zellij/         # Zellij config
     └── zsh/            # Zsh config
 ```
