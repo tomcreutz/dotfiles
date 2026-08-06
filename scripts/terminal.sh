@@ -12,7 +12,9 @@ collect_terminal() {
     if [ "$PKG_MANAGER" = "pacman" ]; then
         queue_pkg alacritty zellij ttf-jetbrains-mono-nerd
     elif [ "$PKG_MANAGER" = "apt" ]; then
-        queue_pkg alacritty unzip fontconfig
+        # Ubuntu 24.04 ships Alacritty 0.13.2, which has broken Kitty
+        # keyboard-release handling. Install the current Snap in setup_terminal.
+        queue_pkg snapd unzip fontconfig
     fi
 }
 
@@ -21,6 +23,22 @@ setup_terminal() {
     echo ""
     info "=== Terminal Setup (configuring) ==="
     echo ""
+
+    # apt: Install a current Alacritty release. The Ubuntu 24.04 package is too
+    # old for applications using the Kitty keyboard protocol (such as Herdr).
+    if [ "$PKG_MANAGER" = "apt" ]; then
+        if ! has_cmd snap; then
+            error "snap is unavailable after installing snapd"
+        fi
+
+        if ! snap list alacritty &> /dev/null; then
+            info "Installing Alacritty from Snap..."
+            sudo snap install alacritty --classic
+            success "Alacritty installed from Snap"
+        else
+            success "Alacritty Snap already installed"
+        fi
+    fi
 
     # apt: Install zellij from GitHub releases (not in default Ubuntu repos)
     if [ "$PKG_MANAGER" = "apt" ] && ! has_cmd zellij; then
@@ -80,21 +98,33 @@ setup_terminal() {
         success "zjstatus plugin already installed"
     fi
 
-    # Set default terminal
-    if has_cmd alacritty; then
+    # Set default terminal. Prefer the stable Snap path on apt-based systems so
+    # the system alternative never falls back to an obsolete distro package.
+    local alacritty_path=""
+    if [ "$PKG_MANAGER" = "apt" ] && [ -x /snap/bin/alacritty ]; then
+        alacritty_path="/snap/bin/alacritty"
+    elif has_cmd alacritty; then
+        alacritty_path="$(command -v alacritty)"
+    fi
+
+    if [ -n "$alacritty_path" ]; then
         echo ""
         if ask_yes_no "Would you like to set Alacritty as your default terminal?"; then
             info "Setting Alacritty as default terminal..."
 
             if [ "$PKG_MANAGER" = "apt" ]; then
-                local alacritty_path
-                alacritty_path="$(which alacritty)"
-
-                if ! update-alternatives --query x-terminal-emulator 2>/dev/null | grep -q "$alacritty_path"; then
+                if ! update-alternatives --query x-terminal-emulator 2>/dev/null | grep -Fq "$alacritty_path"; then
                     sudo update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator "$alacritty_path" 50
                 fi
 
                 sudo update-alternatives --set x-terminal-emulator "$alacritty_path"
+
+                # Ctrl+Alt+T in GNOME launches the command configured here.
+                if has_cmd gsettings && gsettings list-schemas 2>/dev/null | grep -qx "org.gnome.desktop.default-applications.terminal"; then
+                    gsettings set org.gnome.desktop.default-applications.terminal exec 'x-terminal-emulator'
+                    gsettings set org.gnome.desktop.default-applications.terminal exec-arg '-e'
+                fi
+
                 success "Alacritty set as default terminal (x-terminal-emulator)"
 
             elif [ "$PKG_MANAGER" = "pacman" ]; then

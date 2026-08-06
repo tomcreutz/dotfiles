@@ -44,7 +44,7 @@ magenta = "#f5c2e7"
 cyan    = "#94e2d5"
 white   = "#a6adc8"
 
-[shell]
+[terminal.shell]
 program = "/usr/bin/zsh"
 args = ["-l"]
 

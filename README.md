@@ -35,7 +35,7 @@ Install specific modules only:
 - **zsh-syntax-highlighting** - Syntax highlighting
 
 ### Terminal (`scripts/terminal.sh`)
-- **alacritty** - GPU-accelerated terminal
+- **alacritty** - GPU-accelerated terminal (Snap on Ubuntu/Debian for a current release)
 - **zellij** - Terminal multiplexer
 - **JetBrainsMono Nerd Font** - Programming font with icons
 
