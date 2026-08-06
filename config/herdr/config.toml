@@ -3,6 +3,10 @@ onboarding = false
 [terminal]
 default_shell = "zsh"
 
+[keys]
+previous_tab = "alt+left"
+next_tab = "alt+right"
+
 [ui]
 agent_panel_sort = "spaces"
 
