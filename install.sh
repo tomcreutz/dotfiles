@@ -29,7 +29,7 @@ show_help() {
     echo "  terminal  - alacritty, zellij, fonts"
     echo "  dev       - GitHub CLI, Docker, development tools"
     echo "  apps      - Google Chrome, Spotify, desktop apps"
-    echo "  ai        - Claude Code, pi (AI coding assistants)"
+    echo "  ai        - Herdr, Claude Code, pi (AI coding tools)"
     echo "  all       - Install everything (default)"
     echo ""
     echo "Examples:"

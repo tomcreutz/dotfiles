@@ -1,0 +1,13 @@
+onboarding = false
+
+[terminal]
+default_shell = "zsh"
+
+[ui]
+agent_panel_sort = "spaces"
+
+[ui.sidebar.agents]
+rows = [
+  ["state_icon", "agent", "state_text"],
+  ["workspace", "tab"],
+]

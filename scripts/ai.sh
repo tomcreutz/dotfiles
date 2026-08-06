@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# AI coding assistants: Claude Code, pi
+# AI coding tools: Herdr, Claude Code, pi
 
 set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -7,7 +7,7 @@ source "$SCRIPT_DIR/common.sh"
 
 # Phase 1: Set up repos and queue packages for batch install
 collect_ai() {
-    info "=== AI Coding Assistants Setup (collecting packages) ==="
+    info "=== AI Coding Tools Setup (collecting packages) ==="
 
     if [ "$PKG_MANAGER" = "apt" ]; then
         # Set up NodeSource repo for Node.js 20.x LTS
@@ -24,15 +24,16 @@ collect_ai() {
 # Phase 3: Post-install configuration
 setup_ai() {
     echo ""
-    info "=== AI Coding Assistants Setup (configuring) ==="
+    info "=== AI Coding Tools Setup (configuring) ==="
     echo ""
 
     local dotfiles_dir
     dotfiles_dir="$(get_dotfiles_dir)"
 
-    link_pi_path() {
+    link_config_path() {
         local source_path="$1"
         local target_path="$2"
+        local config_name="$3"
 
         if [ ! -e "$source_path" ]; then
             return 0
@@ -49,12 +50,31 @@ setup_ai() {
             rm -f "$target_path"
         elif [ -e "$target_path" ]; then
             local backup_path="${target_path}.backup-$(date +%Y%m%d%H%M%S)"
-            warn "Backing up existing pi config: $target_path -> $backup_path"
+            warn "Backing up existing $config_name config: $target_path -> $backup_path"
             mv "$target_path" "$backup_path"
         fi
 
         ln -s "$source_path" "$target_path"
     }
+
+    # Install Herdr
+    if has_cmd herdr; then
+        success "Herdr already installed"
+    else
+        info "Installing Herdr..."
+        curl -fsSL https://herdr.dev/install.sh | sh
+        success "Herdr installed"
+    fi
+
+    # Link Herdr config without replacing its runtime state, logs, or sockets.
+    if [ -f "$dotfiles_dir/config/herdr/config.toml" ]; then
+        info "Linking Herdr config..."
+        link_config_path \
+            "$dotfiles_dir/config/herdr/config.toml" \
+            "$HOME/.config/herdr/config.toml" \
+            "Herdr"
+        success "Linked Herdr config"
+    fi
 
     # Install Claude Code
     if has_cmd claude; then
@@ -89,12 +109,12 @@ setup_ai() {
     # Do not link auth.json, sessions, cache, trust.json, or installed npm/git package dirs.
     if [ -d "$dotfiles_dir/config/pi/agent" ]; then
         info "Linking pi config..."
-        link_pi_path "$dotfiles_dir/config/pi/agent/settings.json" "$HOME/.pi/agent/settings.json"
-        link_pi_path "$dotfiles_dir/config/pi/agent/models.json" "$HOME/.pi/agent/models.json"
-        link_pi_path "$dotfiles_dir/config/pi/agent/extensions" "$HOME/.pi/agent/extensions"
-        link_pi_path "$dotfiles_dir/config/pi/agent/prompts" "$HOME/.pi/agent/prompts"
-        link_pi_path "$dotfiles_dir/config/pi/agent/skills" "$HOME/.pi/agent/skills"
-        link_pi_path "$dotfiles_dir/config/pi/agent/themes" "$HOME/.pi/agent/themes"
+        link_config_path "$dotfiles_dir/config/pi/agent/settings.json" "$HOME/.pi/agent/settings.json" "pi"
+        link_config_path "$dotfiles_dir/config/pi/agent/models.json" "$HOME/.pi/agent/models.json" "pi"
+        link_config_path "$dotfiles_dir/config/pi/agent/extensions" "$HOME/.pi/agent/extensions" "pi"
+        link_config_path "$dotfiles_dir/config/pi/agent/prompts" "$HOME/.pi/agent/prompts" "pi"
+        link_config_path "$dotfiles_dir/config/pi/agent/skills" "$HOME/.pi/agent/skills" "pi"
+        link_config_path "$dotfiles_dir/config/pi/agent/themes" "$HOME/.pi/agent/themes" "pi"
         success "Linked pi config"
 
         if has_cmd pi; then
@@ -107,7 +127,7 @@ setup_ai() {
         fi
     fi
 
-    success "AI coding assistants setup complete!"
+    success "AI coding tools setup complete!"
 }
 
 # Run standalone if script is executed directly

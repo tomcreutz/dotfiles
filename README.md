@@ -19,7 +19,7 @@ Install specific modules only:
 ./install.sh terminal  # alacritty, zellij, fonts
 ./install.sh dev       # GitHub CLI, Docker, dev tools
 ./install.sh apps      # Chrome, Spotify, desktop apps
-./install.sh ai        # Claude Code, pi (AI assistants)
+./install.sh ai        # Herdr, Claude Code, pi (AI coding tools)
 ./install.sh all       # Everything (default)
 
 # Multiple modules
@@ -51,7 +51,8 @@ Install specific modules only:
 - **Zoom** - Video conferencing
 - **GIMP** - Image editor
 
-### AI Coding Assistants (`scripts/ai.sh`)
+### AI Coding Tools (`scripts/ai.sh`)
+- **Herdr** - Agent runtime, with zsh configured for new panes
 - **Claude Code** - Anthropic's AI coding assistant CLI
 - **pi** - AI coding agent (pi.dev)
   - Links shared config from `config/pi/agent/`
@@ -69,9 +70,10 @@ dotfiles/
 │   ├── terminal.sh     # Terminal apps
 │   ├── dev.sh          # Dev tools
 │   ├── apps.sh         # Desktop apps
-│   └── ai.sh           # AI coding assistants
+│   └── ai.sh           # AI coding tools
 └── config/
     ├── alacritty/      # Alacritty config
+    ├── herdr/          # Herdr config
     ├── pi/             # pi settings, models, extensions, prompts, skills, themes
     ├── zellij/         # Zellij config
     └── zsh/            # Zsh config
