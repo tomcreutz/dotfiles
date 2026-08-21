@@ -1,0 +1,3 @@
+[review]
+auto_open = true
+on_states = ["idle"]

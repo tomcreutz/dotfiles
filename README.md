@@ -53,6 +53,8 @@ Install specific modules only:
 
 ### AI Coding Tools (`scripts/ai.sh`)
 - **Herdr** - Agent runtime, with zsh configured for new panes
+  - Installs declared plugins and links their configs from `config/herdr/plugins/`
+  - Includes `jhochenbaum/herdr-hunk-diff` with automatic review opening
 - **Claude Code** - Anthropic's AI coding assistant CLI
 - **pi** - AI coding agent (pi.dev)
   - Links shared config from `config/pi/agent/`

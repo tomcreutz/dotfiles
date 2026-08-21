@@ -10,10 +10,13 @@ collect_ai() {
     info "=== AI Coding Tools Setup (collecting packages) ==="
 
     if [ "$PKG_MANAGER" = "apt" ]; then
-        # Set up NodeSource repo for Node.js 20.x LTS
-        if [ ! -f /etc/apt/sources.list.d/nodesource.list ]; then
-            info "Adding NodeSource apt repository..."
-            curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+        # Herdr's hunkdiff plugin requires Node.js 22.12 or newer.
+        if ! has_cmd node || ! node -e '
+            const [major, minor] = process.versions.node.split(".").map(Number);
+            process.exit(major > 22 || (major === 22 && minor >= 12) ? 0 : 1);
+        '; then
+            info "Adding NodeSource repository for Node.js 22.x..."
+            curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
         fi
         queue_pkg nodejs
     elif [ "$PKG_MANAGER" = "pacman" ]; then
@@ -74,6 +77,40 @@ setup_ai() {
             "$HOME/.config/herdr/config.toml" \
             "Herdr"
         success "Linked Herdr config"
+    fi
+
+    # Install declared Herdr plugins and link their configs without touching plugin runtime state.
+    local herdr_plugins_dir="$dotfiles_dir/config/herdr/plugins"
+    if [ -d "$herdr_plugins_dir" ]; then
+        local installed_plugins
+        installed_plugins="$(herdr plugin list 2>/dev/null || true)"
+
+        local plugin_dir plugin_id plugin_source plugin_config_dir
+        for plugin_dir in "$herdr_plugins_dir"/*; do
+            [ -d "$plugin_dir" ] || continue
+            plugin_id="$(basename "$plugin_dir")"
+
+            if [ -f "$plugin_dir/source" ]; then
+                plugin_source="$(<"$plugin_dir/source")"
+                if printf '%s\n' "$installed_plugins" | grep -Fq -- "- $plugin_id "; then
+                    success "Herdr plugin already installed: $plugin_id"
+                else
+                    info "Installing Herdr plugin: $plugin_source"
+                    herdr plugin install --yes "$plugin_source"
+                    success "Installed Herdr plugin: $plugin_id"
+                fi
+            fi
+
+            if [ -f "$plugin_dir/config.toml" ]; then
+                plugin_config_dir="$(herdr plugin config-dir "$plugin_id")"
+                info "Linking Herdr plugin config: $plugin_id"
+                link_config_path \
+                    "$plugin_dir/config.toml" \
+                    "$plugin_config_dir/config.toml" \
+                    "Herdr plugin $plugin_id"
+                success "Linked Herdr plugin config: $plugin_id"
+            fi
+        done
     fi
 
     # Install Claude Code
