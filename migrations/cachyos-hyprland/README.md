@@ -1,0 +1,276 @@
+# CachyOS KDE → Hyprland + Noctalia migration
+
+This is a one-time migration for an existing CachyOS KDE installation. It is
+not part of the normal dotfile installer. On a fresh OS installation, select
+CachyOS's Hyprland + Noctalia desktop option and use this migration only if the
+managed preferences/profiles are wanted afterward.
+
+Available profiles:
+
+- `tomlaptop`: ThinkPad T490, German keyboard, Intel compositor GPU, internal
+  `eDP-1` panel, NVIDIA MX250 available for application offload
+- `generic`: automatic monitor selection and no forced GPU; intended as the
+  safe starting point for the CachyOS desktop until its exact hardware profile
+  is added
+
+Shared application defaults are Alacritty, Dolphin, Google Chrome, Kate, and
+KCalc. Numbered workspaces use the Omarchy-style bindings.
+
+The configuration started from `cachyos-hypr-noctalia` 1.2.5 and Noctalia v5.
+
+## Why the session says “Hyprland (UWSM)”
+
+UWSM means **Universal Wayland Session Manager**. Hyprland can run without it,
+but the CachyOS configuration is built around it. UWSM wraps the compositor in
+systemd user units and handles:
+
+- session environment variables, including the selected compositor GPU
+- XDG autostart applications
+- propagating the Wayland/session environment to systemd and D-Bus services
+- launching applications in appropriate systemd scopes with `uwsm app --`
+- orderly application and compositor shutdown
+
+It is therefore not a graphical shell or a second compositor. Noctalia is the
+shell; Hyprland is the compositor; UWSM manages their login session lifecycle.
+The managed keybindings use `uwsm app --`, so choose **Hyprland (UWSM)** in
+SDDM rather than a non-UWSM Hyprland entry.
+
+## 1. Prepare and verify recovery
+
+This machine uses separate Btrfs subvolumes for `/` and `/home`. A root Snapper
+snapshot alone does **not** back up the Hyprland/Noctalia user configuration.
+The preparation phase therefore creates both:
+
+1. an important Snapper snapshot of `/`, verified in Snapper; and
+2. a tar archive of the affected paths in `/home`, plus installed-package
+   manifests.
+
+Run:
+
+```bash
+cd ~/dotfiles/migrations/cachyos-hyprland
+./migrate.sh prepare                    # auto-selects tomlaptop here
+# On the other CachyOS machine for now:
+./migrate.sh prepare --profile generic
+```
+
+Recovery data is written below:
+
+```text
+~/.local/state/dotfiles/migrations/cachyos-hyprland/<timestamp>/
+```
+
+The current laptop has Limine, `limine-snapper-sync`, Snapper, and `snap-pac`
+installed. To verify boot recovery rather than merely assuming it works:
+
+1. Note the snapshot ID printed by `prepare`.
+2. Reboot before applying the migration.
+3. Confirm that ID appears in Limine's **Snapshots** menu.
+4. Ideally boot it once and confirm the existing Plasma system starts in
+   read-only snapshot mode, then reboot into the normal system.
+
+This gives a tested rollback path for software/configuration failure. It cannot
+guarantee recovery from SSD failure, damaged EFI data, or loss of the entire
+Btrfs filesystem because both copies are on the same disk. Copy the timestamped
+recovery directory to external storage before continuing if those cases must be
+covered.
+
+## 2. Apply the migration
+
+After testing recovery:
+
+```bash
+./migrate.sh apply
+```
+
+This performs a full update, ensures the selected applications are installed,
+and adds the official `cachyos-hypr-noctalia` bundle only when it is missing.
+If CachyOS installed the bundle with the OS, it is reused. The script then
+generates the selected machine profile and links only:
+
+- `~/.config/hypr`
+- `~/.config/noctalia`
+- `~/.config/uwsm`
+
+Existing paths are moved into the timestamped recovery directory first. The
+script deliberately does not copy all of `/etc/skel`, which could overwrite
+KDE, GTK, Dolphin, and MIME settings.
+
+The bundle conflicts with `cachyos-kde-settings`. Pacman may remove that preset
+package, but it does not remove Plasma or the existing user KDE configuration.
+
+Verify the applied files with:
+
+```bash
+./migrate.sh verify
+```
+
+Then reboot and select **Hyprland (UWSM)** in SDDM.
+
+## Keybindings
+
+| Action | Binding |
+|---|---|
+| Terminal | `Ctrl+Alt+T` or `Super+Return` |
+| Launcher | `Super+Space` |
+| Noctalia settings | `Super+Z` |
+| Focus workspace 1–9 | `Super+1` … `Super+9` |
+| Move window to workspace 1–9 | `Super+Shift+1` … `Super+Shift+9` |
+| Close window | `Super+Q` |
+| Lock | `Super+L` |
+| Exit/session menu | `Super+Alt+C` |
+
+`Ctrl+Alt+T` has no conflict in the CachyOS Hyprland bindings.
+
+## Laptop docking and lid behavior
+
+The laptop profile has one explicit rule for `eDP-1` and a catch-all rule for
+USB-C/DisplayPort/HDMI outputs. External outputs therefore start in their
+preferred mode with automatic placement instead of relying on a connector name
+that may change between docks.
+
+The `Lid Switch` bindings call
+`~/.config/hypr/scripts/lid-monitor.sh`:
+
+- **Close:** disable `eDP-1` only if another active monitor is already present.
+  Hyprland moves its workspaces/windows to the remaining output. If undocked,
+  the script leaves the panel configured and systemd's normal lid-suspend
+  behavior remains available.
+- **Open:** re-enable `eDP-1` with automatic placement, avoiding a fixed layout
+  that overlaps the dock monitor.
+
+For the reliable docking sequence, connect the USB-C dock and wait for its
+monitor to appear before closing the lid. After first login, verify both names:
+
+```bash
+hyprctl monitors all
+hyprctl devices        # switch should be named “Lid Switch”
+```
+
+Some firmware reports the `switch:on`/`switch:off` directions or switch name
+differently. Test once before relying on closed-lid operation. If the event is
+reversed, swap the `close` and `open` actions in `config/hypr/config/monitors.lua`.
+Do not set `HandleLidSwitch=ignore` globally: doing so would also disable normal
+undocked suspend behavior. The default `HandleLidSwitchDocked=ignore` works with
+the conditional Hyprland handling.
+
+## Why `xhost` is started
+
+The CachyOS baseline runs:
+
+```text
+xhost +SI:localuser:root
+```
+
+This permits only the local root account—not every local user or remote host—to
+connect to XWayland. It supports intentionally launched root GUI/X11 tools. It
+was initially removed to reduce unnecessary X access, but has been restored to
+stay compatible with the CachyOS defaults. It can be removed from
+`config/hypr/config/autostart.lua` if root GUI applications are never used.
+
+## Intel/NVIDIA PRIME offload
+
+The laptop profile pins the **compositor** to Intel through `AQ_DRM_DEVICES`.
+This avoids running the whole desktop on the MX250 and saves power. It does not
+disable NVIDIA.
+
+Normal applications use Intel by default. NVIDIA offload is explicit rather
+than automatic in the general case:
+
+```bash
+prime-run application [arguments...]
+```
+
+For example, a Steam game's launch options can use:
+
+```text
+prime-run %command%
+```
+
+`prime-run` sets NVIDIA's PRIME render-offload environment variables for that
+process. `switcheroo-control` is also installed and running; applications or
+launchers that expose a “Launch using Discrete Graphics Card” action use the
+same idea. If no such action is shown in Noctalia, use `prime-run` directly.
+Do not globally enable the sample NVIDIA `GBM_BACKEND` variables: that would
+force the entire session toward NVIDIA rather than offloading selected apps.
+
+## Validate before removing Plasma
+
+Keep Plasma for several boots and verify:
+
+- launcher, bar, notifications, lock, logout, suspend, and resume
+- undocked lid close, dock detection, closed-lid use, and reopening the lid
+- Wi-Fi, Ethernet through the dock, Bluetooth, audio, microphone, and media keys
+- clipboard history after reboot (KWallet is installed)
+- screenshots and screen sharing in Chrome, Zoom, and Element
+- Intel default rendering and `prime-run` for an application that needs NVIDIA
+
+Useful diagnostics:
+
+```bash
+hyprctl configerrors
+hyprctl monitors all
+systemctl --user --failed
+journalctl --user -b -p warning
+systemctl --user status xdg-desktop-portal.service \
+  xdg-desktop-portal-hyprland.service
+```
+
+If Hyprland fails, return to SDDM and select Plasma.
+
+## Roll back
+
+For a session/configuration problem, select Plasma in SDDM first. To restore
+the pre-migration user paths:
+
+```bash
+cd ~/dotfiles/migrations/cachyos-hyprland
+./restore-home-config.sh
+```
+
+To restore the package/root state, boot the recorded snapshot from Limine's
+**Snapshots** menu. It boots read-only and offers **Restore now**; follow the
+confirmation prompts and reboot. Then run `restore-home-config.sh` because the
+root snapshot does not include `/home`.
+
+## Remove Plasma only after validation
+
+Keep SDDM and KDE libraries required by Dolphin, Kate, KCalc, and KWallet.
+Preview the installed Plasma-group removal set:
+
+```bash
+pacman -Qqg plasma |
+  grep -vxE '^(kde-cli-tools|kwallet-pam|plasma-activities)$' |
+  tee /tmp/plasma-removal.txt
+xargs -r pacman -Rsp --print-format '%n' < /tmp/plasma-removal.txt
+```
+
+If the transaction is acceptable:
+
+```bash
+sudo xargs -r pacman -Rns -- < /tmp/plasma-removal.txt
+```
+
+Do not remove `sddm`, `dolphin`, `kate`, `kcalc`, `kwallet`, `kwallet-pam`,
+`kde-cli-tools`, or anything required by `cachyos-hypr-noctalia`.
+
+## Updating the managed defaults
+
+CachyOS updates `/etc/skel`; it does not overwrite this repository. Compare
+upstream changes before merging them:
+
+```bash
+meld /etc/skel/.config/hypr ~/dotfiles/config/hypr
+meld /etc/skel/.config/noctalia ~/dotfiles/config/noctalia
+```
+
+Noctalia v5 is currently a beta package on this system. Review CachyOS and
+Noctalia release notes before adopting major configuration changes.
+
+## References
+
+- [CachyOS Hyprland migration and configuration](https://wiki.cachyos.org/configuration/desktop_environments/hyprland/)
+- [CachyOS Btrfs snapshot recovery](https://wiki.cachyos.org/configuration/btrfs_snapshots/)
+- [Hyprland: systemd startup with UWSM](https://wiki.hypr.land/Useful-Utilities/Systemd-start/)
+- [Hyprland switch bindings](https://wiki.hypr.land/Configuring/Basics/Binds/)
+- [Hyprland multi-GPU configuration](https://wiki.hypr.land/Configuring/Advanced-and-Cool/Multi-GPU/)

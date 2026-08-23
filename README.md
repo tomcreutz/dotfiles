@@ -61,6 +61,14 @@ Install specific modules only:
   - Installs extension packages listed in `config/pi/agent/settings.json`
   - Does **not** sync secrets or state (`auth.json`, `sessions/`, `cache/`, `trust.json`, installed `npm/`/`git/` package caches)
 
+## Desktop migrations
+
+Desktop-environment changes are one-time migrations rather than normal dotfile
+installation modules. For moving an existing CachyOS KDE system to Hyprland and
+Noctalia, see [`migrations/cachyos-hyprland/`](migrations/cachyos-hyprland/).
+A fresh CachyOS installation should use CachyOS's Hyprland + Noctalia installer
+option instead.
+
 ## Structure
 
 ```
@@ -73,10 +81,15 @@ dotfiles/
 │   ├── dev.sh          # Dev tools
 │   ├── apps.sh         # Desktop apps
 │   └── ai.sh           # AI coding tools
+├── migrations/
+│   └── cachyos-hyprland/ # Existing KDE system migration
 └── config/
     ├── alacritty/      # Alacritty config
     ├── herdr/          # Herdr config
     ├── pi/             # pi settings, models, extensions, prompts, skills, themes
+    ├── hypr/           # Hyprland Lua configuration
+    ├── noctalia/       # Noctalia v5 configuration
+    ├── uwsm/           # Wayland session environment
     ├── zellij/         # Zellij config
     └── zsh/            # Zsh config
 ```

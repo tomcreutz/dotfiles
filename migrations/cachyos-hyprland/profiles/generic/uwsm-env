@@ -1,0 +1,2 @@
+# Generic profile: no compositor GPU is forced. On a multi-GPU machine, set
+# AQ_DRM_DEVICES to stable /dev/dri/by-path/*-card paths after inspecting it.
