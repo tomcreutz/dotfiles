@@ -205,9 +205,12 @@ stay compatible with the CachyOS defaults. It can be removed from
 
 ## Intel/NVIDIA PRIME offload
 
-The laptop profile pins the **compositor** to Intel through `AQ_DRM_DEVICES`.
-This avoids running the whole desktop on the MX250 and saves power. It does not
-disable NVIDIA.
+Aquamarine automatically selects Intel for the **compositor** because it is the
+only KMS-capable GPU; the MX250 exposes no display connectors on this laptop.
+The profile intentionally leaves `AQ_DRM_DEVICES` unset. Its PCI by-path name
+contains colons, which this Aquamarine version mistakes for device-list
+separators. Automatic selection avoids that startup failure without disabling
+NVIDIA.
 
 Normal applications use Intel by default. NVIDIA offload is explicit rather
 than automatic in the general case:

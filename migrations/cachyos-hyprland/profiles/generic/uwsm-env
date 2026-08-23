@@ -1,2 +1,4 @@
-# Generic profile: no compositor GPU is forced. On a multi-GPU machine, set
-# AQ_DRM_DEVICES to stable /dev/dri/by-path/*-card paths after inspecting it.
+# Generic profile: no compositor GPU is forced. Prefer Aquamarine's automatic
+# selection. If a future multi-KMS system needs AQ_DRM_DEVICES, use card paths
+# or custom stable symlinks whose names contain no colons; PCI by-path names are
+# split incorrectly by affected Aquamarine versions.

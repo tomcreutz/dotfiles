@@ -1,3 +1,5 @@
-# Keep the compositor on the Intel UHD 620. The NVIDIA MX250 remains
-# available to applications through switcheroo-control or `prime-run`.
-export AQ_DRM_DEVICES=/dev/dri/by-path/pci-0000:00:02.0-card
+# Aquamarine automatically selects the Intel UHD 620 because it is the only
+# KMS-capable GPU. Do not set AQ_DRM_DEVICES to the PCI by-path here: the path's
+# colons are interpreted as device-list separators by this Aquamarine version.
+# The NVIDIA MX250 remains available to applications through switcheroo-control
+# or `prime-run`.
