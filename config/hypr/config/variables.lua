@@ -10,4 +10,4 @@ CALCULATOR   = "kcalc"
 -- profile in config/machine.lua.
 
 -- Omarchy-style numbered workspaces.
-NUM_WORKSPACES = 9
+NUM_WORKSPACES = 5

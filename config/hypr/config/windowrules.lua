@@ -14,7 +14,7 @@ hl.window_rule({
 
 -- Gaming
 local gamingApps = "^(steam_app.*|gamescope)$"
-local gamingWorkspace = "name:gaming"
+local gamingWorkspace = "5"
 
 hl.window_rule({ match = { content = "game" }, workspace = gamingWorkspace })
 hl.window_rule({ match = { xdg_tag = "^(.*game.*)$" }, workspace = gamingWorkspace, fullscreen_state = 2, content = "game", sync_fullscreen = true })
@@ -44,6 +44,18 @@ hl.window_rule({
     fullscreen_state = 0,
     workspace        = gamingWorkspace,
 })
+
+-- Purpose-oriented workspace routing. The custom Herdr class applies only to
+-- the login Herdr terminal; manually opened Alacritty windows stay wherever
+-- they are launched.
+local workspaceApps = {
+    { class = "^([Gg]oogle-chrome|md\\.obsidian\\.Obsidian|[Oo]bsidian)$", workspace = "1" },
+    { class = "^(Herdr)$", workspace = "2" },
+    { class = "^([Tt]hunderbird|[Ee]lement)$", workspace = "3" },
+}
+for _, app in ipairs(workspaceApps) do
+    hl.window_rule({ match = { class = app.class }, workspace = app.workspace })
+end
 
 -- Apps
 hl.window_rule({ match = { class = "^(.*\\.exe)$", float = true }, monitor = PRIMARY_MONITOR, center = true, fullscreen_state = 0 })

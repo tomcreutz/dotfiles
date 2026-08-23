@@ -114,13 +114,48 @@ Then reboot and select **Hyprland (UWSM)** in SDDM.
 | Terminal | `Ctrl+Alt+T` or `Super+Return` |
 | Launcher | `Super+Space` |
 | Noctalia settings | `Super+Z` |
-| Focus workspace 1–9 | `Super+1` … `Super+9` |
-| Move window to workspace 1–9 | `Super+Shift+1` … `Super+Shift+9` |
+| Focus workspace 1–5 | `Super+1` … `Super+5` |
+| Move window to workspace 1–5 | `Super+Shift+1` … `Super+Shift+5` |
 | Close window | `Super+Q` |
 | Lock | `Super+L` |
 | Exit/session menu | `Super+Alt+C` |
 
 `Ctrl+Alt+T` has no conflict in the CachyOS Hyprland bindings.
+
+## Workspaces and login applications
+
+| Workspace | Layout | Purpose | Applications started at login |
+|---|---|---|---|
+| 1 `web` | scrolling | Browser / research | Google Chrome, Obsidian |
+| 2 `code` | scrolling | IDE / terminals | Alacritty running Herdr |
+| 3 `chat` | master | Communication | Thunderbird, Element |
+| 4 `misc` | dwindle | Miscellaneous | — |
+| 5 `game` | default + fullscreen rules | Gaming | — |
+
+All five workspaces are persistent and their short labels are visible in
+Noctalia. Detected games are routed to workspace 5 and made fullscreen by the
+existing game window rules; fullscreen is a window state, not a workspace
+layout.
+
+The applications above start from the `hyprland.start` hook in
+`config/hypr/config/autostart.lua`, using `uwsm-app` in the same general style
+as Omarchy Quattro. Workspace window rules place them after they appear. The
+special `Herdr` Alacritty class routes only the login terminal to workspace 2;
+normal terminals still open on the current workspace.
+
+This is deterministic autostart, not complete desktop-session restoration.
+Hyprland, Noctalia, UWSM, and Omarchy Quattro do not reconstruct every previous
+window and its application contents after reboot. Instead:
+
+- Chrome can restore tabs when **Settings → On startup → Continue where you
+  left off** is enabled.
+- Obsidian, Thunderbird, and Element retain their own application state.
+- Starting `herdr` attaches to its persistent Herdr session.
+
+Community Hyprland session-restoration tools exist, but they mostly record
+application commands, workspace placement, and geometry. They cannot recover
+unsaved content and can be unreliable with Electron or single-instance apps,
+so none is enabled for the initial migration.
 
 ## Laptop docking and lid behavior
 

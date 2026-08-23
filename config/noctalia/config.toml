@@ -139,4 +139,4 @@ capsule = true
 capsule_fill = "on_primary"
 inactive_pill_size = 1.0
 pill_scale = 0.80
-show_labels = false
+show_labels = true
