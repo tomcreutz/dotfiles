@@ -114,8 +114,8 @@ Then reboot and select **Hyprland (UWSM)** in SDDM.
 | Terminal | `Ctrl+Alt+T` or `Super+Return` |
 | Launcher | `Super+Space` |
 | Noctalia settings | `Super+Z` |
-| Focus workspace 1–5 | `Super+1` … `Super+5` |
-| Move window to workspace 1–5 | `Super+Shift+1` … `Super+Shift+5` |
+| Focus workspace 1–6 | `Super+1` … `Super+6` |
+| Move window to workspace 1–6 | `Super+Shift+1` … `Super+Shift+6` |
 | Close window | `Super+Q` |
 | Lock | `Super+L` |
 | Exit/session menu | `Super+Alt+C` |
@@ -127,13 +127,14 @@ Then reboot and select **Hyprland (UWSM)** in SDDM.
 | Workspace | Layout | Purpose | Applications started at login |
 |---|---|---|---|
 | 1 `web` | scrolling | Browser / research | Google Chrome, Obsidian |
-| 2 `code` | scrolling | IDE / terminals | Alacritty running Herdr |
-| 3 `chat` | master | Communication | Thunderbird, Element |
-| 4 `misc` | dwindle | Miscellaneous | — |
-| 5 `game` | default + fullscreen rules | Gaming | — |
+| 2 `agents` | scrolling | Herdr / agents | Alacritty running Herdr |
+| 3 `code` | scrolling | IDE / other work | — |
+| 4 `chat` | master | Communication | Thunderbird, Element |
+| 5 `misc` | dwindle | Miscellaneous | — |
+| 6 `game` | default + fullscreen rules | Gaming | — |
 
-All five workspaces are persistent and their short labels are visible in
-Noctalia. Detected games are routed to workspace 5 and made fullscreen by the
+All six workspaces are persistent and their short labels are visible in
+Noctalia. Detected games are routed to workspace 6 and made fullscreen by the
 existing game window rules; fullscreen is a window state, not a workspace
 layout.
 
@@ -141,7 +142,9 @@ The applications above start from the `hyprland.start` hook in
 `config/hypr/config/autostart.lua`, using `uwsm-app` in the same general style
 as Omarchy Quattro. Workspace window rules place them after they appear. The
 special `Herdr` Alacritty class routes only the login terminal to workspace 2;
-normal terminals still open on the current workspace.
+normal terminals still open on the current workspace. Element is launched with
+`--password-store=kwallet6` because Electron cannot infer the installed KWallet
+backend when the desktop identifier is `Hyprland`.
 
 This is deterministic autostart, not complete desktop-session restoration.
 Hyprland, Noctalia, UWSM, and Omarchy Quattro do not reconstruct every previous

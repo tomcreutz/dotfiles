@@ -1,10 +1,11 @@
 -- Workspace rules wiki https://wiki.hypr.land/Configuring/Basics/Workspace-Rules/
--- Keep the five purpose-oriented workspaces visible in Noctalia when empty.
+-- Keep the six purpose-oriented workspaces visible in Noctalia when empty.
 local workspaces = {
-    { id = "1", name = "web",  layout = "scrolling" }, -- Browser / research
-    { id = "2", name = "code", layout = "scrolling" }, -- IDE / terminals
-    { id = "3", name = "chat", layout = "master" },    -- Communication
-    { id = "4", name = "misc", layout = "dwindle" },   -- Miscellaneous
+    { id = "1", name = "web",    layout = "scrolling" }, -- Browser / research
+    { id = "2", name = "agents", layout = "scrolling" }, -- Herdr / agents
+    { id = "3", name = "code",   layout = "scrolling" }, -- IDE / other work
+    { id = "4", name = "chat",   layout = "master" },    -- Communication
+    { id = "5", name = "misc",   layout = "dwindle" },   -- Miscellaneous
 }
 
 for _, workspace in ipairs(workspaces) do
@@ -17,9 +18,9 @@ for _, workspace in ipairs(workspaces) do
 end
 
 -- Fullscreen is a window state rather than a workspace layout. Game window
--- rules route detected games to workspace 5 and make them fullscreen.
+-- rules route detected games to workspace 6 and make them fullscreen.
 hl.workspace_rule({
-    workspace = "5",
+    workspace = "6",
     default_name = "game",
     persistent = true,
 })

@@ -11,7 +11,8 @@ hl.on("hyprland.start", function ()
     hl.exec_cmd("uwsm-app -- obsidian")
     hl.exec_cmd("uwsm-app -- alacritty --class Herdr -e $HOME/.local/bin/herdr")
     hl.exec_cmd("uwsm-app -- thunderbird")
-    hl.exec_cmd("uwsm-app -- element-desktop")
+    -- Electron cannot infer KWallet under XDG_CURRENT_DESKTOP=Hyprland.
+    hl.exec_cmd("uwsm-app -- element-desktop --password-store=kwallet6")
 
     -- CachyOS allows only the local root user to connect to XWayland. This is
     -- narrower than plain `xhost +` and supports deliberately launched root

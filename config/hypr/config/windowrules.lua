@@ -14,7 +14,7 @@ hl.window_rule({
 
 -- Gaming
 local gamingApps = "^(steam_app.*|gamescope)$"
-local gamingWorkspace = "5"
+local gamingWorkspace = "6"
 
 hl.window_rule({ match = { content = "game" }, workspace = gamingWorkspace })
 hl.window_rule({ match = { xdg_tag = "^(.*game.*)$" }, workspace = gamingWorkspace, fullscreen_state = 2, content = "game", sync_fullscreen = true })
@@ -51,7 +51,7 @@ hl.window_rule({
 local workspaceApps = {
     { class = "^([Gg]oogle-chrome|md\\.obsidian\\.Obsidian|[Oo]bsidian)$", workspace = "1" },
     { class = "^(Herdr)$", workspace = "2" },
-    { class = "^([Tt]hunderbird|[Ee]lement)$", workspace = "3" },
+    { class = "^(org\\.mozilla\\.Thunderbird|[Tt]hunderbird|[Ee]lement)$", workspace = "4" },
 }
 for _, app in ipairs(workspaceApps) do
     hl.window_rule({ match = { class = app.class }, workspace = app.workspace })
