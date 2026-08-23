@@ -2,8 +2,9 @@
 
 This is a one-time migration for an existing CachyOS KDE installation. It is
 not part of the normal dotfile installer. On a fresh OS installation, select
-CachyOS's Hyprland + Noctalia desktop option and use this migration only if the
-managed preferences/profiles are wanted afterward.
+CachyOS's Hyprland + Noctalia desktop option and run `./install.sh hyprland`
+instead; that module applies the managed profile and standalone SilentSDDM
+without assuming Plasma was ever installed.
 
 Available profiles:
 
@@ -98,6 +99,12 @@ KDE, GTK, Dolphin, and MIME settings.
 
 The bundle conflicts with `cachyos-kde-settings`. Pacman may remove that preset
 package, but it does not remove Plasma or the existing user KDE configuration.
+That preset selected Breeze, which otherwise disappears with `plasma-desktop`
+on fresh non-Plasma systems. The migration installs the standalone
+`sddm-silent-theme` package and `/etc/sddm.conf.d/10-dotfiles-theme.conf`, using
+SilentSDDM's default preset while keeping the Hyprland UWSM and Plasma session
+choices available. SilentSDDM uses Qt6 but does not depend on Plasma; installing
+it requires CachyOS's usual `paru` helper or another AUR helper such as `yay`.
 
 Verify the applied files with:
 
@@ -142,9 +149,19 @@ The applications above start from the `hyprland.start` hook in
 `config/hypr/config/autostart.lua`, using `uwsm-app` in the same general style
 as Omarchy Quattro. Workspace window rules place them after they appear. The
 special `Herdr` Alacritty class routes only the login terminal to workspace 2;
-normal terminals still open on the current workspace. Element is launched with
-`--password-store=kwallet6` because Electron cannot infer the installed KWallet
-backend when the desktop identifier is `Hyprland`.
+normal terminals still open on the current workspace. Chrome starts before
+Obsidian and both receive full-monitor-width scrolling columns, so `Super+Left`
+and `Super+Right` reveal one application at a time.
+
+Element is launched with `--password-store=kwallet6` because Electron cannot
+infer the installed KWallet backend when the desktop identifier is `Hyprland`.
+Before Element starts, `start-session-apps.sh` passes the login password
+captured by SDDM's `pam_kwallet` module to KWallet. Plasma normally
+performs that step through a KDE-only autostart service; doing it explicitly
+prevents a second wallet password prompt in Hyprland while retaining encrypted
+storage. Auto-unlock also requires the `kdewallet` password to match the account
+login password; if it was changed independently, use KWalletManager once to
+align it.
 
 This is deterministic autostart, not complete desktop-session restoration.
 Hyprland, Noctalia, UWSM, and Omarchy Quattro do not reconstruct every previous

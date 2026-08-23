@@ -146,7 +146,7 @@ apply() {
         die "Prepared profile $(<"$state/profile") does not match requested profile $PROFILE"
     fi
 
-    local packages=(alacritty kate kcalc)
+    local packages=(alacritty kate kcalc kwallet kwallet-pam)
     if ! pacman -Qq cachyos-hypr-noctalia &>/dev/null; then
         info "Installing the official CachyOS Hyprland + Noctalia bundle..."
         warn "Pacman will replace cachyos-kde-settings, but Plasma remains installed"
@@ -156,6 +156,21 @@ apply() {
     fi
     # Always use -Syu so this never creates an unsupported partial Arch update.
     sudo pacman -Syu --needed "${packages[@]}"
+
+    if ! pacman -Qq sddm-silent-theme &>/dev/null; then
+        info "Installing the standalone SilentSDDM theme..."
+        if command -v paru &>/dev/null; then
+            paru -S --needed sddm-silent-theme
+        elif command -v yay &>/dev/null; then
+            yay -S --needed sddm-silent-theme
+        else
+            die "SilentSDDM requires sddm-silent-theme from the AUR; install paru or yay first"
+        fi
+    else
+        success "sddm-silent-theme is already installed"
+    fi
+    sudo install -Dm 0644 "$DOTFILES_DIR/config/sddm/10-dotfiles-theme.conf" \
+        /etc/sddm.conf.d/10-dotfiles-theme.conf
 
     if ! command -v google-chrome-stable &>/dev/null; then
         if command -v paru &>/dev/null; then
@@ -186,7 +201,7 @@ verify() {
     require_cachyos
     local failed=0 name
     pacman -Qq cachyos-hypr-noctalia hyprland noctalia uwsm \
-        xdg-desktop-portal-hyprland >/dev/null || failed=1
+        xdg-desktop-portal-hyprland sddm-silent-theme >/dev/null || failed=1
     for name in hypr noctalia uwsm; do
         if [ ! -L "$HOME/.config/$name" ] || \
            [ "$(readlink -f "$HOME/.config/$name")" != "$(readlink -f "$DOTFILES_DIR/config/$name")" ]; then
@@ -196,6 +211,12 @@ verify() {
     done
     [ -f "$DOTFILES_DIR/config/hypr/config/machine.lua" ] || failed=1
     [ -f "$DOTFILES_DIR/config/uwsm/env.local" ] || failed=1
+    if [ ! -f /usr/share/sddm/themes/silent/Main.qml ] ||
+       [ ! -f /etc/sddm.conf.d/10-dotfiles-theme.conf ] ||
+       ! grep -qx 'Current=silent' /etc/sddm.conf.d/10-dotfiles-theme.conf; then
+        warn "SDDM is not configured to use SilentSDDM"
+        failed=1
+    fi
     (( failed == 0 )) || die "Migration verification failed"
     success "Migration files and packages are in place"
 }

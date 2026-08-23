@@ -2,17 +2,9 @@
 -- if you dont use UWSM add your auto start programs here, otherwise use XDG autostart https://wiki.archlinux.org/title/XDG_Autostart
 
 hl.on("hyprland.start", function ()
-    hl.exec_cmd("dbus-update-activation-environment --systemd --all")
-    hl.exec_cmd("noctalia")
-
-    -- Start the regular workspace applications through UWSM. Window rules
-    -- place them on their purpose-oriented workspaces after they appear.
-    hl.exec_cmd("uwsm-app -- google-chrome-stable")
-    hl.exec_cmd("uwsm-app -- obsidian")
-    hl.exec_cmd("uwsm-app -- alacritty --class Herdr -e $HOME/.local/bin/herdr")
-    hl.exec_cmd("uwsm-app -- thunderbird")
-    -- Electron cannot infer KWallet under XDG_CURRENT_DESKTOP=Hyprland.
-    hl.exec_cmd("uwsm-app -- element-desktop --password-store=kwallet6")
+    -- Initialize KWallet first, then start workspace applications through UWSM
+    -- in deterministic order. Noctalia itself uses its XDG autostart entry.
+    hl.exec_cmd("$HOME/.config/hypr/scripts/start-session-apps.sh")
 
     -- CachyOS allows only the local root user to connect to XWayland. This is
     -- narrower than plain `xhost +` and supports deliberately launched root

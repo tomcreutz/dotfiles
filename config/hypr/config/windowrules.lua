@@ -49,12 +49,20 @@ hl.window_rule({
 -- the login Herdr terminal; manually opened Alacritty windows stay wherever
 -- they are launched.
 local workspaceApps = {
-    { class = "^([Gg]oogle-chrome|md\\.obsidian\\.Obsidian|[Oo]bsidian)$", workspace = "1" },
+    {
+        class = "^([Gg]oogle-chrome|md\\.obsidian\\.Obsidian|[Oo]bsidian)$",
+        workspace = "1",
+        scrolling_width = 1.0,
+    },
     { class = "^(Herdr)$", workspace = "2" },
     { class = "^(org\\.mozilla\\.Thunderbird|[Tt]hunderbird|[Ee]lement)$", workspace = "4" },
 }
 for _, app in ipairs(workspaceApps) do
-    hl.window_rule({ match = { class = app.class }, workspace = app.workspace })
+    hl.window_rule({
+        match = { class = app.class },
+        workspace = app.workspace,
+        scrolling_width = app.scrolling_width,
+    })
 end
 
 -- Apps

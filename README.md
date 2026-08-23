@@ -20,6 +20,7 @@ Install specific modules only:
 ./install.sh dev       # GitHub CLI, Docker, dev tools
 ./install.sh apps      # Chrome, Spotify, desktop apps
 ./install.sh ai        # Herdr, Claude Code, pi (AI coding tools)
+./install.sh hyprland  # Fresh CachyOS Hyprland + Noctalia configuration
 ./install.sh all       # Everything (default)
 
 # Multiple modules
@@ -51,6 +52,12 @@ Install specific modules only:
 - **Zoom** - Video conferencing
 - **GIMP** - Image editor
 
+### Hyprland Desktop (`scripts/hyprland.sh`)
+- Reuses CachyOS's Hyprland + Noctalia bundle from a fresh OS installation
+- Links the managed Hyprland, Noctalia, and UWSM configurations
+- Generates the matching laptop or generic machine profile
+- Installs standalone SilentSDDM with its default preset; Plasma is not required
+
 ### AI Coding Tools (`scripts/ai.sh`)
 - **Herdr** - Agent runtime, with zsh configured for new panes
   - Installs declared plugins and links their configs from `config/herdr/plugins/`
@@ -67,7 +74,9 @@ Desktop-environment changes are one-time migrations rather than normal dotfile
 installation modules. For moving an existing CachyOS KDE system to Hyprland and
 Noctalia, see [`migrations/cachyos-hyprland/`](migrations/cachyos-hyprland/).
 A fresh CachyOS installation should use CachyOS's Hyprland + Noctalia installer
-option instead.
+option, then run `./install.sh hyprland`. The module installs SilentSDDM from the
+AUR using `paru` or `yay`, links the desktop configs, and does not require a
+prior Plasma installation.
 
 ## Structure
 
@@ -80,7 +89,8 @@ dotfiles/
 │   ├── terminal.sh     # Terminal apps
 │   ├── dev.sh          # Dev tools
 │   ├── apps.sh         # Desktop apps
-│   └── ai.sh           # AI coding tools
+│   ├── ai.sh           # AI coding tools
+│   └── hyprland.sh     # Fresh CachyOS Hyprland/Noctalia setup
 ├── migrations/
 │   └── cachyos-hyprland/ # Existing KDE system migration
 └── config/

@@ -6,6 +6,7 @@
 #   ./install.sh core      # Install only core (zsh, oh-my-zsh)
 #   ./install.sh terminal  # Install only terminal (alacritty, zellij, fonts)
 #   ./install.sh dev       # Install only dev tools (gh, etc.)
+#   ./install.sh hyprland  # Configure a fresh CachyOS Hyprland installation
 #
 set -e
 
@@ -16,7 +17,7 @@ export DOTFILES_DIR
 source "$DOTFILES_DIR/scripts/common.sh"
 
 # Available modules
-MODULES=(core terminal dev apps ai)
+MODULES=(core terminal dev apps ai hyprland)
 
 show_help() {
     echo ""
@@ -30,6 +31,7 @@ show_help() {
     echo "  dev       - GitHub CLI, Docker, development tools"
     echo "  apps      - Google Chrome, Spotify, desktop apps"
     echo "  ai        - Herdr, Claude Code, pi (AI coding tools)"
+    echo "  hyprland  - Fresh CachyOS Hyprland, Noctalia, UWSM, SilentSDDM"
     echo "  all       - Install everything (default)"
     echo ""
     echo "Examples:"
