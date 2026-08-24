@@ -15,5 +15,8 @@
     "npm:pi-sidequest"
   ],
   "theme": "dark",
-  "lastChangelogVersion": "0.84.2"
+  "lastChangelogVersion": "0.84.3",
+  "modelThinkingLevels": {
+    "openrouter/stealth/ox-alpha": "high"
+  }
 }

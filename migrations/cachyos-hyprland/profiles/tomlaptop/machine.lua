@@ -6,3 +6,4 @@ MONITOR_POSITION = "auto"
 MONITOR_SCALE = "1"
 ENABLE_MONITOR_FALLBACK = true
 LID_SWITCH = "Lid Switch"
+TOUCHPAD_DEVICE = "synps/2-synaptics-touchpad"

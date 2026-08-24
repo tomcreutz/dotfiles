@@ -177,6 +177,13 @@ application commands, workspace placement, and geometry. They cannot recover
 unsaved content and can be unreliable with Electron or single-instance apps,
 so none is enabled for the initial migration.
 
+## Touchpad settings
+
+Edit sensitivity, acceleration profile, and natural scrolling in
+`config/hypr/config/inputs.lua`. The hardware name is `TOUCHPAD_DEVICE` in the
+machine profile; find it with `hyprctl devices`. The per-device rule avoids
+changing the TrackPoint or external mice.
+
 ## Laptop docking and lid behavior
 
 The laptop profile has one explicit rule for `eDP-1` and a catch-all rule for

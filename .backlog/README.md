@@ -20,6 +20,4 @@ This directory contains implementation-ready work items for coding agents.
 
 ## Current items
 
-| Item | Status | Summary |
-|---|---|---|
-| [001](001-noctalia-touchpad-settings-plugin.md) | planned | Add touchpad sensitivity to Noctalia through a local plugin |
+No open items.
