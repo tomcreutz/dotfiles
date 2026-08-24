@@ -155,8 +155,8 @@ and `Super+Right` reveal one application at a time.
 
 Element is launched with `--password-store=kwallet6` because Electron cannot
 infer the installed KWallet backend when the desktop identifier is `Hyprland`.
-Before Element starts, `start-session-apps.sh` passes the login password
-captured by SDDM's `pam_kwallet` module to KWallet. Plasma normally
+Before Noctalia or Element starts, `start-session-apps.sh` passes the login
+password captured by SDDM's `pam_kwallet` module to KWallet. Plasma normally
 performs that step through a KDE-only autostart service; doing it explicitly
 prevents a second wallet password prompt in Hyprland while retaining encrypted
 storage. Auto-unlock also requires the `kdewallet` password to match the account

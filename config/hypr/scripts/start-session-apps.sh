@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Initialize the UWSM/D-Bus environment and unlock KWallet with the password
-# captured by SDDM before Element can activate its encrypted-storage backend
-# and trigger a second password prompt. Noctalia starts through XDG autostart.
+# captured by SDDM before Noctalia or Element can activate an encrypted-storage
+# backend and trigger a second password prompt.
 set -u
 
 dbus-update-activation-environment --systemd --all
@@ -17,6 +17,7 @@ if [ -n "${PAM_KWALLET5_LOGIN:-}" ] && [ -x /usr/lib/pam_kwallet_init ]; then
     done
 fi
 
+uwsm app -t service -- noctalia
 uwsm app -t service -- "$HOME/.config/hypr/scripts/start-web-workspace.sh"
 uwsm app -t service -- alacritty --class Herdr -e "$HOME/.local/bin/herdr"
 uwsm app -t service -- thunderbird

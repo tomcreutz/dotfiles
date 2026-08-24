@@ -2,8 +2,8 @@
 -- if you dont use UWSM add your auto start programs here, otherwise use XDG autostart https://wiki.archlinux.org/title/XDG_Autostart
 
 hl.on("hyprland.start", function ()
-    -- Initialize KWallet first, then start workspace applications through UWSM
-    -- in deterministic order. Noctalia itself uses its XDG autostart entry.
+    -- Initialize KWallet first, then start Noctalia and workspace applications
+    -- through UWSM in deterministic order.
     hl.exec_cmd("$HOME/.config/hypr/scripts/start-session-apps.sh")
 
     -- CachyOS allows only the local root user to connect to XWayland. This is
