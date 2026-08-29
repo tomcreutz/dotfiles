@@ -24,10 +24,10 @@ collect_apps() {
             echo "deb [signed-by=/usr/share/keyrings/element-io-archive-keyring.gpg] https://packages.element.io/debian/ default main" | sudo tee /etc/apt/sources.list.d/element-io.list
         fi
 
-        queue_pkg spotify-client element-desktop gimp
+        queue_pkg spotify-client element-desktop gimp thunderbird
 
     elif [ "$PKG_MANAGER" = "pacman" ]; then
-        queue_pkg gimp
+        queue_pkg gimp thunderbird
         queue_aur google-chrome spotify obsidian element-desktop zoom
     fi
 }

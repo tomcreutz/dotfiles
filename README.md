@@ -51,6 +51,7 @@ Install specific modules only:
 - **Element** - Matrix chat client
 - **Zoom** - Video conferencing
 - **GIMP** - Image editor
+- **Thunderbird** - Email client
 
 ### Hyprland Desktop (`scripts/hyprland.sh`)
 - Reuses CachyOS's Hyprland + Noctalia bundle from a fresh OS installation
