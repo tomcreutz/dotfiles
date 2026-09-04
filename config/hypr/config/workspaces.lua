@@ -1,7 +1,7 @@
 -- Workspace rules wiki https://wiki.hypr.land/Configuring/Basics/Workspace-Rules/
 -- Keep the six purpose-oriented workspaces visible in Noctalia when empty.
 local workspaces = {
-    { id = "1", name = "web",    layout = "scrolling" }, -- Browser / research
+    { id = "1", name = "web",    layout = WEB_WORKSPACE_LAYOUT }, -- Browser / research
     { id = "2", name = "agents", layout = "scrolling" }, -- Herdr / agents
     { id = "3", name = "code",   layout = "scrolling" }, -- IDE / other work
     { id = "4", name = "chat",   layout = "master" },    -- Communication

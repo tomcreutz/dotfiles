@@ -16,8 +16,9 @@ collect_hyprland() {
 
 hyprland_profile() {
     case "$(hostnamectl --static 2>/dev/null || hostname)" in
-        tomlaptop) printf 'tomlaptop\n' ;;
-        *) printf 'generic\n' ;;
+        tomlaptop)  printf 'tomlaptop\n' ;;
+        tom-desktop) printf 'tom-desktop\n' ;;
+        *)           printf 'generic\n' ;;
     esac
 }
 

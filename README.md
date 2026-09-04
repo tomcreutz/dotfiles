@@ -56,7 +56,7 @@ Install specific modules only:
 ### Hyprland Desktop (`scripts/hyprland.sh`)
 - Reuses CachyOS's Hyprland + Noctalia bundle from a fresh OS installation
 - Links the managed Hyprland, Noctalia, and UWSM configurations
-- Generates the matching laptop or generic machine profile
+- Generates the matching laptop, desktop, or generic machine profile
 - Installs standalone SilentSDDM with its default preset; Plasma is not required
 
 ### AI Coding Tools (`scripts/ai.sh`)

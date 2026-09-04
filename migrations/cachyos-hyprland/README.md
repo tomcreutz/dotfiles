@@ -10,9 +10,10 @@ Available profiles:
 
 - `tomlaptop`: ThinkPad T490, German keyboard, Intel compositor GPU, internal
   `eDP-1` panel, NVIDIA MX250 available for application offload
-- `generic`: automatic monitor selection and no forced GPU; intended as the
-  safe starting point for the CachyOS desktop until its exact hardware profile
-  is added
+- `tom-desktop`: Ryzen 5 5600X, AMD Radeon RX 9070, and the LG ultrawide on
+  `DP-2` at 3840×1600, 144 Hz, scale 1; additional outputs are automatic
+- `generic`: automatic monitor selection and no forced GPU; safe fallback for
+  an unknown CachyOS machine
 
 Shared application defaults are Alacritty, Dolphin, Google Chrome, Kate, and
 KCalc. Numbered workspaces use the Omarchy-style bindings.
@@ -50,8 +51,8 @@ Run:
 
 ```bash
 cd ~/dotfiles/migrations/cachyos-hyprland
-./migrate.sh prepare                    # auto-selects tomlaptop here
-# On the other CachyOS machine for now:
+./migrate.sh prepare   # auto-selects tomlaptop or tom-desktop by hostname
+# Override detection or use the safe fallback if needed:
 ./migrate.sh prepare --profile generic
 ```
 
@@ -61,8 +62,9 @@ Recovery data is written below:
 ~/.local/state/dotfiles/migrations/cachyos-hyprland/<timestamp>/
 ```
 
-The current laptop has Limine, `limine-snapper-sync`, Snapper, and `snap-pac`
-installed. To verify boot recovery rather than merely assuming it works:
+Both current CachyOS machines have Limine, `limine-snapper-sync`, Snapper, and
+`snap-pac` installed. They also use separate Btrfs subvolumes for `/` and
+`/home`. To verify boot recovery rather than merely assuming it works:
 
 1. Note the snapshot ID printed by `prepare`.
 2. Reboot before applying the migration.
@@ -177,19 +179,25 @@ application commands, workspace placement, and geometry. They cannot recover
 unsaved content and can be unreliable with Electron or single-instance apps,
 so none is enabled for the initial migration.
 
-## Touchpad settings
+## Mouse and touchpad settings
 
-Edit sensitivity, acceleration profile, and natural scrolling in
-`config/hypr/config/inputs.lua`. The hardware name is `TOUCHPAD_DEVICE` in the
-machine profile; find it with `hyprctl devices`. The per-device rule avoids
-changing the TrackPoint or external mice.
+Edit per-device sensitivity, acceleration, and natural scrolling in
+`config/hypr/config/inputs.lua`; device names and machine-specific sensitivity
+values live in the active machine profile. Find exact names with
+`hyprctl devices`. Both machine profiles configure the shared MX Master when
+its Bolt receiver is present; the laptop additionally configures only its
+touchpad. Unrelated pointer devices keep the global fallback settings.
 
 ## Laptop docking and lid behavior
 
 The laptop profile has one explicit rule for `eDP-1` and a catch-all rule for
 USB-C/DisplayPort/HDMI outputs. External outputs therefore start in their
 preferred mode with automatic placement instead of relying on a connector name
-that may change between docks.
+that may change between docks. This also covers the shared LG ultrawide: its
+connector name can differ when video travels through the laptop's USB-C
+DisplayPort-alt-mode path instead of directly from the desktop GPU. Keeping
+`preferred` is intentional because the laptop/dock link may negotiate a lower
+maximum refresh rate than the desktop's direct DisplayPort connection.
 
 The `Lid Switch` bindings call
 `~/.config/hypr/scripts/lid-monitor.sh`:
@@ -230,10 +238,12 @@ was initially removed to reduce unnecessary X access, but has been restored to
 stay compatible with the CachyOS defaults. It can be removed from
 `config/hypr/config/autostart.lua` if root GUI applications are never used.
 
-## Intel/NVIDIA PRIME offload
+## Machine GPU behavior
+
+### Laptop: Intel/NVIDIA PRIME offload
 
 Aquamarine automatically selects Intel for the **compositor** because it is the
-only KMS-capable GPU; the MX250 exposes no display connectors on this laptop.
+only KMS-capable GPU; the MX250 exposes no display connectors on the laptop.
 The profile intentionally leaves `AQ_DRM_DEVICES` unset. Its PCI by-path name
 contains colons, which this Aquamarine version mistakes for device-list
 separators. Automatic selection avoids that startup failure without disabling
@@ -259,16 +269,29 @@ same idea. If no such action is shown in Noctalia, use `prime-run` directly.
 Do not globally enable the sample NVIDIA `GBM_BACKEND` variables: that would
 force the entire session toward NVIDIA rather than offloading selected apps.
 
+### Desktop: AMD Radeon
+
+The desktop has one KMS-capable GPU, an AMD Radeon RX 9070, so Aquamarine's
+automatic GPU selection is deterministic. Its profile intentionally leaves
+`AQ_DRM_DEVICES` and driver overrides unset; the normal `amdgpu` and RADV stack
+needs no NVIDIA-style session variables. The LG ultrawide advertises a 48–144
+Hz adaptive-sync range. The shared Hyprland configuration enables VRR, so check
+for flicker and game compatibility during validation; Plasma currently has VRR
+disabled for this output.
+
 ## Validate before removing Plasma
 
 Keep Plasma for several boots and verify:
 
 - launcher, bar, notifications, lock, logout, suspend, and resume
-- undocked lid close, dock detection, closed-lid use, and reopening the lid
-- Wi-Fi, Ethernet through the dock, Bluetooth, audio, microphone, and media keys
 - clipboard history after reboot (KWallet is installed)
 - screenshots and screen sharing in Chrome, Zoom, and Element
-- Intel default rendering and `prime-run` for an application that needs NVIDIA
+- on the laptop: undocked lid close, dock detection, closed-lid use, reopening
+  the lid, Intel default rendering, and `prime-run` for an NVIDIA application
+- on the desktop: `DP-2` at 3840×1600 around 144 Hz and scale 1, AMD rendering,
+  adaptive sync in games, and any additionally connected display
+- the machine's applicable Wi-Fi/Ethernet, Bluetooth, audio, microphone, and
+  media keys
 
 Useful diagnostics:
 

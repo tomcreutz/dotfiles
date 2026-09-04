@@ -7,8 +7,9 @@ hl.monitor({
     scale = MONITOR_SCALE,
 })
 
--- On the laptop this picks up USB-C/HDMI displays without assigning a static
--- connector name. The explicit eDP-1 rule above remains more specific.
+-- Machine profiles can use this to pick up additional displays without
+-- assigning static connector names. The explicit primary rule remains more
+-- specific.
 if ENABLE_MONITOR_FALLBACK then
     hl.monitor({
         output = "",

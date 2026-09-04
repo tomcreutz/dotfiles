@@ -13,9 +13,17 @@ hl.config({
     -- },
 })
 
--- Per-device touchpad settings. Find the device name with `hyprctl devices`
--- and set TOUCHPAD_DEVICE in the active machine profile.
--- sensitivity: -1.0 (slower) to 1.0 (faster); 0.0 is unmodified.
+-- Per-device pointer settings. Find device names with `hyprctl devices` and
+-- set them in the active machine profile. Sensitivity ranges from -1.0
+-- (slower) to 1.0 (faster); 0.0 is unmodified.
+if MOUSE_DEVICE and MOUSE_DEVICE ~= "" then
+    hl.device({
+        name = MOUSE_DEVICE,
+        sensitivity = MOUSE_SENSITIVITY or 0.0,
+        accel_profile = MOUSE_ACCEL_PROFILE or "adaptive",
+    })
+end
+
 if TOUCHPAD_DEVICE and TOUCHPAD_DEVICE ~= "" then
     hl.device({
         name = TOUCHPAD_DEVICE,

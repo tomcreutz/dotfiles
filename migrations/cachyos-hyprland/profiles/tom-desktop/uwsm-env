@@ -1,0 +1,3 @@
+# tom-desktop has one KMS-capable GPU, an AMD Radeon RX 9070. Aquamarine's
+# automatic selection is deterministic, so AQ_DRM_DEVICES is intentionally
+# unset. RADV and amdgpu also need no forced Hyprland session variables.

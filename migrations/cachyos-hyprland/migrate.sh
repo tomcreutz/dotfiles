@@ -15,8 +15,8 @@ die() { printf '\033[0;31m[ERROR]\033[0m %s\n' "$*" >&2; exit 1; }
 usage() {
     cat <<'EOF'
 Usage:
-  ./migrate.sh prepare [--profile tomlaptop|generic]
-  ./migrate.sh apply [--profile tomlaptop|generic]
+  ./migrate.sh prepare [--profile tomlaptop|tom-desktop|generic]
+  ./migrate.sh apply [--profile tomlaptop|tom-desktop|generic]
   ./migrate.sh verify
 
 prepare  Creates and verifies a root snapshot plus a separate home-config
@@ -30,8 +30,9 @@ EOF
 
 default_profile() {
     case "$(hostnamectl --static 2>/dev/null || hostname)" in
-        tomlaptop) printf 'tomlaptop\n' ;;
-        *) printf 'generic\n' ;;
+        tomlaptop)  printf 'tomlaptop\n' ;;
+        tom-desktop) printf 'tom-desktop\n' ;;
+        *)           printf 'generic\n' ;;
     esac
 }
 
