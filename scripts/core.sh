@@ -53,6 +53,15 @@ setup_core() {
         success "Linked .zshrc"
     fi
 
+    # Link SSH client config
+    if [ -f "$dotfiles_dir/config/ssh/config" ]; then
+        info "Linking SSH config..."
+        mkdir -p "$HOME/.ssh"
+        chmod 700 "$HOME/.ssh"
+        ln -sf "$dotfiles_dir/config/ssh/config" "$HOME/.ssh/config"
+        success "Linked SSH config"
+    fi
+
     # Set default shell
     local zsh_path
     zsh_path="$(which zsh)"

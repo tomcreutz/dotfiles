@@ -34,6 +34,7 @@ Install specific modules only:
 - **oh-my-zsh** - Zsh framework
 - **zsh-autosuggestions** - Fish-like autosuggestions
 - **zsh-syntax-highlighting** - Syntax highlighting
+- **SSH config** - Host aliases, including `ssh nas`
 
 ### Terminal (`scripts/terminal.sh`)
 - **alacritty** - GPU-accelerated terminal (Snap on Ubuntu/Debian for a current release)
@@ -100,6 +101,7 @@ dotfiles/
     ├── pi/             # pi settings, models, extensions, prompts, skills, themes
     ├── hypr/           # Hyprland Lua configuration
     ├── noctalia/       # Noctalia v5 configuration
+    ├── ssh/            # SSH client host aliases
     ├── uwsm/           # Wayland session environment
     ├── zellij/         # Zellij config
     └── zsh/            # Zsh config

@@ -1,0 +1,4 @@
+Host nas
+    HostName 192.168.178.2
+    User tom
+    IdentityFile ~/.ssh/id_ed25519
