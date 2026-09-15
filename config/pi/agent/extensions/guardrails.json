@@ -10,6 +10,30 @@
   "features": {
     "pathAccess": true
   },
+  "policies": {
+    "rules": [
+      {
+        "id": "project-env-files",
+        "name": "Project environment files",
+        "description": "Prevent agents from accessing environment files containing local secrets while allowing example files.",
+        "patterns": [
+          { "pattern": "*.env" }
+        ],
+        "allowedPatterns": [
+          { "pattern": "*.env.example" },
+          { "pattern": "*.env.sample" },
+          { "pattern": "*.env.test" },
+          { "pattern": "*.example.env" },
+          { "pattern": "*.sample.env" },
+          { "pattern": "*.test.env" }
+        ],
+        "protection": "noAccess",
+        "onlyIfExists": true,
+        "enabled": true,
+        "blockMessage": "Accessing {file} is not allowed because it may contain local secrets. Example, sample, and test environment files remain accessible."
+      }
+    ]
+  },
   "pathAccess": {
     "mode": "ask",
     "allowedPaths": [
