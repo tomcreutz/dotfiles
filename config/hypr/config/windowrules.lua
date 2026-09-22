@@ -45,16 +45,15 @@ hl.window_rule({
     workspace        = gamingWorkspace,
 })
 
--- Purpose-oriented workspace routing. The custom Herdr class applies only to
--- the login Herdr terminal; manually opened Alacritty windows stay wherever
--- they are launched.
+-- Purpose-oriented workspace routing. Orca's desktop window uses the `orca`
+-- class; normal terminals stay wherever they are launched.
 local workspaceApps = {
     {
         class = "^([Gg]oogle-chrome|md\\.obsidian\\.Obsidian|[Oo]bsidian)$",
         workspace = "1",
         scrolling_width = 1.0,
     },
-    { class = "^(Herdr)$", workspace = "2" },
+    { class = "^(orca)$", workspace = "2" },
     { class = "^(org\\.mozilla\\.Thunderbird|[Tt]hunderbird|[Ee]lement)$", workspace = "4" },
 }
 for _, app in ipairs(workspaceApps) do

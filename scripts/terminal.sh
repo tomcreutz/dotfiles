@@ -25,7 +25,7 @@ setup_terminal() {
     echo ""
 
     # apt: Install a current Alacritty release. The Ubuntu 24.04 package is too
-    # old for applications using the Kitty keyboard protocol (such as Herdr).
+    # old for applications using the Kitty keyboard protocol.
     if [ "$PKG_MANAGER" = "apt" ]; then
         if ! has_cmd snap; then
             error "snap is unavailable after installing snapd"

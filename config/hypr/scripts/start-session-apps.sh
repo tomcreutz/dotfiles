@@ -19,6 +19,11 @@ fi
 
 uwsm app -t service -- noctalia
 uwsm app -t service -- "$HOME/.config/hypr/scripts/start-web-workspace.sh"
-uwsm app -t service -- alacritty --class Herdr -e "$HOME/.local/bin/herdr"
+# The AppImage launches the GUI; `orca` is Orca's separate CLI.
+if [ -x "$HOME/Applications/Orca.AppImage" ]; then
+    uwsm app -t service -- "$HOME/Applications/Orca.AppImage"
+elif command -v orca-ide >/dev/null 2>&1; then
+    uwsm app -t service -- orca-ide
+fi
 uwsm app -t service -- thunderbird
 exec uwsm app -t service -- element-desktop --password-store=kwallet6

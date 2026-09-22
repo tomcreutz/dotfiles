@@ -31,7 +31,7 @@ show_help() {
     echo "  terminal  - alacritty, zellij, fonts"
     echo "  dev       - GitHub CLI, Docker, development tools"
     echo "  apps      - Google Chrome, Spotify, desktop apps"
-    echo "  ai        - Herdr, Claude Code, pi (AI coding tools)"
+    echo "  ai        - Orca, Claude Code, pi (AI coding tools)"
     echo "  nas       - NAS datasets SMB mount and credentials"
     echo "  hyprland  - Fresh CachyOS Hyprland, Noctalia, UWSM, SilentSDDM"
     echo "  all       - Install everything (default)"

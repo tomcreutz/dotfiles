@@ -9,7 +9,14 @@
   "packages": [
     "npm:@marckrenn/pi-sub-bar",
     "npm:pi-web-access",
-    "npm:@aliou/pi-guardrails",
+    {
+      "source": "npm:@aliou/pi-guardrails",
+      "extensions": [
+        "extensions/path-access/index.ts",
+        "extensions/guardrails/index.ts",
+        "extensions/permission-gate/index.ts"
+      ]
+    },
     "npm:@juicesharp/rpiv-ask-user-question",
     "npm:pi-sidequest",
     "npm:@sting8k/pi-vcc",

@@ -19,7 +19,7 @@ Install specific modules only:
 ./install.sh terminal  # alacritty, zellij, fonts
 ./install.sh dev       # GitHub CLI, Docker, dev tools
 ./install.sh apps      # Chrome, Spotify, desktop apps
-./install.sh ai        # Herdr, Claude Code, pi (AI coding tools)
+./install.sh ai        # Orca, Claude Code, pi (AI coding tools)
 ./install.sh nas       # NAS datasets SMB mount and local credentials
 ./install.sh hyprland  # Fresh CachyOS Hyprland + Noctalia configuration
 ./install.sh all       # Everything (default)
@@ -68,9 +68,9 @@ Install specific modules only:
 - Installs standalone SilentSDDM with its default preset; Plasma is not required
 
 ### AI Coding Tools (`scripts/ai.sh`)
-- **Herdr** - Agent runtime, with zsh configured for new panes
-  - Installs declared plugins and links their configs from `config/herdr/plugins/`
-  - Includes `jhochenbaum/herdr-hunk-diff` with automatic review opening
+- **Orca** - Agent development environment (Linux AppImage in `~/Applications/Orca.AppImage`; existing installs are left alone)
+  - On Hyprland, starts the Orca desktop app in the `agents` workspace
+  - Orca manages its own Pi integration extensions (status, title bar, prefill)
 - **Claude Code** - Anthropic's AI coding assistant CLI
 - **pi** - AI coding agent (pi.dev)
   - Links shared config from `config/pi/agent/`
@@ -105,7 +105,6 @@ dotfiles/
 │   └── cachyos-hyprland/ # Existing KDE system migration
 └── config/
     ├── alacritty/      # Alacritty config
-    ├── herdr/          # Herdr config
     ├── pi/             # pi settings, models, extensions, prompts, skills, themes
     ├── hypr/           # Hyprland Lua configuration
     ├── noctalia/       # Noctalia v5 configuration

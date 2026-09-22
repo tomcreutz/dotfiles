@@ -48,10 +48,9 @@ alias zj='zellij'
 alias zja='zellij attach'
 alias zjl='zellij list-sessions'
 
-# Run coding agents in the current project's Dev Container while allowing
-# host-side Herdr to identify the agent behind the devcontainer wrapper.
+# Run pi in the current project's Dev Container.
 dcpi() {
-    HERDR_AGENT=pi devcontainer exec --workspace-folder "$PWD" pi "$@"
+    devcontainer exec --workspace-folder "$PWD" pi "$@"
 }
 
 # History settings
