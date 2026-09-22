@@ -1,0 +1,1 @@
+{{SHARE}} {{MOUNT_POINT}} cifs credentials={{CREDENTIALS_FILE}},uid={{UID}},gid={{GID}},vers={{SMB_VERSION}},nofail,_netdev,x-systemd.automount 0 0

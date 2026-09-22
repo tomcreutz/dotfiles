@@ -20,6 +20,7 @@ Install specific modules only:
 ./install.sh dev       # GitHub CLI, Docker, dev tools
 ./install.sh apps      # Chrome, Spotify, desktop apps
 ./install.sh ai        # Herdr, Claude Code, pi (AI coding tools)
+./install.sh nas       # NAS datasets SMB mount and local credentials
 ./install.sh hyprland  # Fresh CachyOS Hyprland + Noctalia configuration
 ./install.sh all       # Everything (default)
 
@@ -44,6 +45,12 @@ Install specific modules only:
 ### Dev Tools (`scripts/dev.sh`)
 - **GitHub CLI** (`gh`) - GitHub from the command line
 - **Docker** - Container runtime (includes docker-compose, post-install setup)
+
+### NAS datasets (`scripts/nas.sh`)
+- Installs CIFS/SMB client tooling
+- Creates the `/mnt/nas-datasets` automount through a managed `/etc/fstab` block
+- Prompts for SMB credentials only when no existing credentials file is found
+- Keeps credentials local and reuses either previously documented credentials-file location
 
 ### Desktop Apps (`scripts/apps.sh`)
 - **Google Chrome** - Web browser
@@ -92,6 +99,7 @@ dotfiles/
 │   ├── dev.sh          # Dev tools
 │   ├── apps.sh         # Desktop apps
 │   ├── ai.sh           # AI coding tools
+│   ├── nas.sh          # NAS datasets SMB automount
 │   └── hyprland.sh     # Fresh CachyOS Hyprland/Noctalia setup
 ├── migrations/
 │   └── cachyos-hyprland/ # Existing KDE system migration
@@ -101,6 +109,7 @@ dotfiles/
     ├── pi/             # pi settings, models, extensions, prompts, skills, themes
     ├── hypr/           # Hyprland Lua configuration
     ├── noctalia/       # Noctalia v5 configuration
+    ├── nas/            # Non-secret NAS settings and fstab template
     ├── ssh/            # SSH client host aliases
     ├── uwsm/           # Wayland session environment
     ├── zellij/         # Zellij config
