@@ -5,7 +5,7 @@
     "enabled": false
   },
   "hideThinkingBlock": false,
-  "defaultThinkingLevel": "xhigh",
+  "defaultThinkingLevel": "medium",
   "packages": [
     "npm:@marckrenn/pi-sub-bar",
     "npm:pi-web-access",
