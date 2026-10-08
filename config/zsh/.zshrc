@@ -106,3 +106,6 @@ _zellij_auto_start() {
 }
 _zellij_auto_start
 unset -f _zellij_auto_start
+
+# Pi
+export PATH="/home/tom/.pi/agent/bin:$PATH"

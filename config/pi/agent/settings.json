@@ -23,7 +23,7 @@
     "npm:pi-claude-bridge"
   ],
   "theme": "dark",
-  "lastChangelogVersion": "0.87.1",
+  "lastChangelogVersion": "1.0.4",
   "modelThinkingLevels": {
     "openrouter/stealth/ox-alpha": "high"
   }
