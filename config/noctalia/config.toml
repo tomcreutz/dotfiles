@@ -4,7 +4,7 @@ ui_scale = 1.20
 [bar.default]
 center = [ "workspaces", "spacer_1", "active_window" ]
 concave_edge_corners = true
-end = [ "media", "spacer_1", "tray", "group:g1", "spacer_2", "notifications", "network", "volume", "session" ]
+end = [ "media", "spacer_1", "tray", "group:g1", "spacer_2", "notifications", "network", "volume", "battery_indicator", "session" ]
 margin_edge = 0
 margin_ends = 0
 radius_bottom_left = 12
@@ -88,6 +88,9 @@ wallpaper_scheme = "m3-tonal-spot"
 
     [theme.templates]
     builtin_ids = [ "btop", "gtk3", "gtk4", "kcolorscheme", "kitty", "qt", "alacritty" ]
+
+[widget.battery_indicator]
+type = "tom/battery-indicator:bar"
 
 [widget.clock]
 color = "secondary"

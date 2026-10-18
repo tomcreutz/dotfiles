@@ -1,0 +1,16 @@
+id = "tom/battery-indicator"
+name = "Battery Indicator"
+version = "1.0.0"
+plugin_api = 26
+author = "Tom"
+license = "MIT"
+description = "Battery percentage with state-dependent colors."
+tags = [ "bar", "battery", "system" ]
+dependencies = []
+
+[[widget]]
+id = "bar"
+entry = "bar.luau"
+
+    [widget.actions]
+    left = "panel-toggle control-center power"
