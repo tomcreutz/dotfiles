@@ -1,6 +1,6 @@
 {
-  "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-6-sol",
+  "defaultProvider": "anthropic",
+  "defaultModel": "claude-opus-5-5",
   "compaction": {
     "enabled": false
   },
@@ -20,10 +20,11 @@
     "npm:@juicesharp/rpiv-ask-user-question",
     "npm:pi-sidequest",
     "npm:@sting8k/pi-vcc",
-    "npm:pi-claude-bridge"
+    "npm:pi-claude-bridge",
+    "npm:@gotgenes/pi-anthropic-auth"
   ],
   "theme": "dark",
-  "lastChangelogVersion": "1.0.4",
+  "lastChangelogVersion": "1.4.0",
   "modelThinkingLevels": {
     "openrouter/stealth/ox-alpha": "high"
   }
