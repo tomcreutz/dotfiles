@@ -20,7 +20,6 @@
     "npm:@juicesharp/rpiv-ask-user-question",
     "npm:pi-sidequest",
     "npm:@sting8k/pi-vcc",
-    "npm:pi-claude-bridge",
     "npm:@gotgenes/pi-anthropic-auth"
   ],
   "theme": "dark",
