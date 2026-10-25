@@ -20,11 +20,15 @@
     "npm:@juicesharp/rpiv-ask-user-question",
     "npm:pi-sidequest",
     "npm:@sting8k/pi-vcc",
-    "npm:@gotgenes/pi-anthropic-auth"
+    "npm:@gotgenes/pi-anthropic-auth",
+    "npm:pi-provider-melious"
   ],
   "theme": "dark",
   "lastChangelogVersion": "1.4.0",
   "modelThinkingLevels": {
     "openrouter/stealth/ox-alpha": "high"
+  },
+  "warnings": {
+    "anthropicExtraUsage": false
   }
 }
