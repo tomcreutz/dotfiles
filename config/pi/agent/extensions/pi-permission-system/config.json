@@ -1,0 +1,51 @@
+{
+  "permission": {
+    "*": "allow",
+    "path": {
+      "*": "allow",
+      "*.env": "deny",
+      ".env": "deny",
+      "*.env.*": "deny",
+      ".dev.vars": "deny",
+      "~/.ssh/*": "deny",
+      "~/.gnupg/*": "deny",
+      "~/.gpg-agent.conf": "deny",
+      "~/.config/gh/*": "deny",
+      "~/.config/gcloud/*": "deny",
+      "~/.config/op/*": "deny",
+      "~/.config/sops/*": "deny",
+      "*.env.example": "allow",
+      "*.env.sample": "allow",
+      "*.env.test": "allow",
+      "*.example.env": "allow",
+      "*.sample.env": "allow",
+      "*.test.env": "allow",
+      "~/.ssh/*.pub": "allow"
+    },
+    "external_directory": {
+      "*": "ask",
+      "/dev/null": "allow"
+    },
+    "bash": {
+      "*": "allow",
+      "rm -r *": "ask",
+      "rm -R *": "ask",
+      "rm -rf *": "ask",
+      "rm -fr *": "ask",
+      "rm --recursive *": "ask",
+      "sudo *": "ask",
+      "doas *": "ask",
+      "pkexec *": "ask",
+      "dd *of=*": "ask",
+      "mkfs*": "ask",
+      "chmod -R *": "ask",
+      "chown -R *": "ask",
+      "shred *": "ask",
+      "wipefs *": "ask",
+      "blkdiscard *": "ask",
+      "fdisk *": "ask",
+      "parted *": "ask",
+      "docker run *--privileged*": "ask"
+    }
+  }
+}

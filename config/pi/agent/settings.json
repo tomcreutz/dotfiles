@@ -9,19 +9,12 @@
   "packages": [
     "npm:@marckrenn/pi-sub-bar",
     "npm:pi-web-access",
-    {
-      "source": "npm:@aliou/pi-guardrails",
-      "extensions": [
-        "extensions/path-access/index.ts",
-        "extensions/guardrails/index.ts",
-        "extensions/permission-gate/index.ts"
-      ]
-    },
     "npm:@juicesharp/rpiv-ask-user-question",
-    "npm:pi-sidequest",
     "npm:@sting8k/pi-vcc",
     "npm:@gotgenes/pi-anthropic-auth",
     "npm:pi-provider-melious"
+    "npm:@gotgenes/pi-permission-system",
+    "npm:pi-subagents"
   ],
   "theme": "dark",
   "lastChangelogVersion": "1.4.0",
@@ -30,5 +23,37 @@
   },
   "warnings": {
     "anthropicExtraUsage": false
+  },
+  "subagents": {
+    "defaultSubagentOnlyExtensions": [
+      "/home/tom/.pi/agent/npm/node_modules/@gotgenes/pi-permission-system/src/index.ts",
+      "/home/tom/.pi/agent/npm/node_modules/pi-web-access/dist/index.js"
+    ],
+    "agentOverrides": {
+      "scout": {
+        "model": "anthropic/claude-haiku-5-5",
+        "thinking": "low"
+      },
+      "worker": {
+        "model": "anthropic/claude-opus-5-5",
+        "thinking": "medium"
+      },
+      "reviewer": {
+        "model": "anthropic/claude-sonnet-5-5",
+        "thinking": "high"
+      },
+      "oracle": {
+        "model": "anthropic/claude-opus-5-5",
+        "thinking": "high"
+      },
+      "researcher": {
+        "model": "anthropic/claude-sonnet-5-5",
+        "thinking": "medium"
+      },
+      "evidence-auditor": {
+        "model": "anthropic/claude-opus-5-5",
+        "thinking": "high"
+      }
+    }
   }
 }
