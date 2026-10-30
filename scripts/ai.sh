@@ -198,6 +198,17 @@ setup_ai() {
         fi
     fi
 
+    # Link Claude Code config from this dotfiles repo.
+    # Do not link .credentials.json, settings.local.json (machine-specific),
+    # history, sessions, projects, plugins, caches or backups.
+    if [ -d "$dotfiles_dir/config/claude" ]; then
+        info "Linking Claude Code config..."
+        link_config_path "$dotfiles_dir/config/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md" "Claude Code"
+        link_config_path "$dotfiles_dir/config/claude/settings.json" "$HOME/.claude/settings.json" "Claude Code"
+        link_config_path "$dotfiles_dir/config/claude/hooks" "$HOME/.claude/hooks" "Claude Code"
+        success "Linked Claude Code config"
+    fi
+
     success "AI coding tools setup complete!"
 }
 
