@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# AI coding tools: Orca, Claude Code, pi
+# AI coding tools: Herdr, Claude Code, pi
 
 set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -60,29 +60,39 @@ setup_ai() {
         ln -s "$source_path" "$target_path"
     }
 
-    # Orca's Linux AppImage self-updates; do not overwrite an existing install.
-    # The Orca CLI (`orca`) is separate from the GUI executable.
-    if [ -x "$HOME/Applications/Orca.AppImage" ] || has_cmd orca-ide; then
-        success "Orca already installed"
+    # Herdr app (`herdr-app`) plus herdr-core (`hc`), which runs the terminals.
+    # The installer puts the app in ~/.local/share/herdr-app and both commands
+    # in ~/.local/bin. Both update themselves afterwards, so an existing install
+    # is left alone.
+    if [ -x "$HOME/.local/bin/herdr-app" ] || has_cmd herdr-app; then
+        success "Herdr already installed"
     else
-        local appimage_name app_dir appimage_tmp
-        case "$(uname -m)" in
-            x86_64) appimage_name="orca-linux.AppImage" ;;
-            aarch64|arm64) appimage_name="orca-linux-arm64.AppImage" ;;
-            *) error "No Orca AppImage available for architecture: $(uname -m)" ;;
-        esac
-        app_dir="$HOME/Applications"
-        mkdir -p "$app_dir"
-        appimage_tmp="$(mktemp "$app_dir/.orca.XXXXXX.AppImage")"
-        info "Downloading Orca AppImage..."
-        if ! curl -fL --retry 3 -o "$appimage_tmp" \
-            "https://github.com/stablyai/orca/releases/latest/download/$appimage_name"; then
-            rm -f "$appimage_tmp"
-            error "Could not download Orca AppImage"
-        fi
-        chmod +x "$appimage_tmp"
-        mv "$appimage_tmp" "$app_dir/Orca.AppImage"
-        success "Orca installed at $app_dir/Orca.AppImage"
+        info "Installing Herdr..."
+        curl -fsSL https://releases.herdr.dev/app/install.sh | sh
+        success "Herdr installed"
+    fi
+
+    # Link personal Herdr app files. ~/.config/herdr-app also holds files Herdr
+    # rewrites on every start (shipped layouts/mods, AGENTS.md, icons, state),
+    # so only items that exist in this repo are linked, one by one.
+    local herdr_src="$dotfiles_dir/config/herdr-app"
+    local herdr_home="$HOME/.config/herdr-app"
+    if [ -d "$herdr_src" ]; then
+        info "Linking Herdr config..."
+        local item
+        for item in settings.json keys.json programs.json; do
+            link_config_path "$herdr_src/$item" "$herdr_home/$item" "Herdr"
+        done
+        for item in "$herdr_src"/layouts/*.json "$herdr_src"/themes/*.json; do
+            [ -e "$item" ] || continue
+            link_config_path "$item" "$herdr_home/${item#"$herdr_src"/}" "Herdr"
+        done
+        for item in "$herdr_src"/mods/*/; do
+            [ -d "$item" ] || continue
+            item="${item%/}"
+            link_config_path "$item" "$herdr_home/mods/$(basename "$item")" "Herdr"
+        done
+        success "Linked Herdr config"
     fi
 
     # Install Claude Code

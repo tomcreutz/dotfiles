@@ -136,7 +136,7 @@ Then reboot and select **Hyprland (UWSM)** in SDDM.
 | Workspace | Layout | Purpose | Applications started at login |
 |---|---|---|---|
 | 1 `web` | scrolling | Browser / research | Google Chrome, Obsidian |
-| 2 `agents` | scrolling | Orca / agents | Orca desktop app |
+| 2 `agents` | scrolling | Herdr / agents | Herdr desktop app |
 | 3 `code` | scrolling | IDE / other work | — |
 | 4 `chat` | master | Communication | Thunderbird, Element |
 | 5 `misc` | dwindle | Miscellaneous | — |
@@ -150,7 +150,7 @@ layout.
 The applications above start from the `hyprland.start` hook in
 `config/hypr/config/autostart.lua`, using `uwsm-app` in the same general style
 as Omarchy Quattro. Workspace window rules place them after they appear.
-Orca's desktop window class routes it to workspace 2; normal terminals still
+Herdr's desktop window class routes it to workspace 2; normal terminals still
 open on the current workspace. Chrome starts before Obsidian and both receive
 full-monitor-width scrolling columns, so `Super+Left`
 and `Super+Right` reveal one application at a time.
@@ -172,7 +172,7 @@ window and its application contents after reboot. Instead:
 - Chrome can restore tabs when **Settings → On startup → Continue where you
   left off** is enabled.
 - Obsidian, Thunderbird, and Element retain their own application state.
-- Orca retains its own repositories and worktrees between launches.
+- Herdr keeps its spaces and tabs in herdr-core between launches.
 
 Community Hyprland session-restoration tools exist, but they mostly record
 application commands, workspace placement, and geometry. They cannot recover

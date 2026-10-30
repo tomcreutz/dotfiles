@@ -19,7 +19,7 @@ Install specific modules only:
 ./install.sh terminal  # alacritty, zellij, fonts
 ./install.sh dev       # GitHub CLI, Docker, dev tools
 ./install.sh apps      # Chrome, Spotify, desktop apps
-./install.sh ai        # Orca, Claude Code, pi (AI coding tools)
+./install.sh ai        # Herdr, Claude Code, pi (AI coding tools)
 ./install.sh nas       # NAS datasets SMB mount and local credentials
 ./install.sh hyprland  # Fresh CachyOS Hyprland + Noctalia configuration
 ./install.sh all       # Everything (default)
@@ -68,9 +68,10 @@ Install specific modules only:
 - Installs standalone SilentSDDM with its default preset; Plasma is not required
 
 ### AI Coding Tools (`scripts/ai.sh`)
-- **Orca** - Agent development environment (Linux AppImage in `~/Applications/Orca.AppImage`; existing installs are left alone)
-  - On Hyprland, starts the Orca desktop app in the `agents` workspace
-  - Orca manages its own Pi integration extensions (status, title bar, prefill)
+- **Herdr** - Desktop app for coding agents ([herdr.dev](https://herdr.dev)), installed with the official installer; `herdr-app` and herdr-core's `hc` land in `~/.local/bin` and update themselves
+  - On Hyprland, starts the Herdr window in the `agents` workspace; agents keep running in herdr-core when it closes
+  - Links personal files from `config/herdr-app/` (`settings.json`, `keys.json`, `programs.json`, `layouts/*.json`, `themes/*.json`, `mods/*/`) one by one into `~/.config/herdr-app/`; Herdr's shipped layouts, mods and state are never committed
+  - Agent status comes from OSC 7501, which pi and Claude Code report natively; no extra integration needed
 - **Claude Code** - Anthropic's AI coding assistant CLI
 - **pi** - AI coding agent (pi.dev)
   - Links shared config from `config/pi/agent/`
@@ -86,6 +87,10 @@ A fresh CachyOS installation should use CachyOS's Hyprland + Noctalia installer
 option, then run `./install.sh hyprland`. The module installs SilentSDDM from the
 AUR using `paru` or `yay`, links the desktop configs, and does not require a
 prior Plasma installation.
+
+To remove Orca and the old Herdr TUI (including their Claude Code hooks and
+OpenCode plugins) from a machine that still has them, run
+`migrations/orca-to-herdr/migrate.sh` once.
 
 ## Structure
 
