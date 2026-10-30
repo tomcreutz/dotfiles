@@ -70,7 +70,9 @@ Install specific modules only:
 ### AI Coding Tools (`scripts/ai.sh`)
 - **Herdr** - Desktop app for coding agents ([herdr.dev](https://herdr.dev)), installed with the official installer; `herdr-app` and herdr-core's `hc` land in `~/.local/bin` and update themselves
   - On Hyprland, starts the Herdr window in the `agents` workspace; agents keep running in herdr-core when it closes
-  - Links personal files from `config/herdr-app/` (`settings.json`, `keys.json`, `programs.json`, `layouts/*.json`, `themes/*.json`, `mods/*/`) one by one into `~/.config/herdr-app/`; Herdr's shipped layouts, mods and state are never committed
+  - Links `layouts/`, `mods/` and `themes/` in `~/.config/herdr-app/` as folders into `config/herdr-app/` (like pi's `extensions/`), so new layouts and mods land in the repo by themselves; `settings.json`, `keys.json` and `programs.json` are linked once they exist in the repo
+  - Herdr writes its shipped layouts/mods into those folders on every start; `config/herdr-app/.gitignore` is regenerated from Herdr's `installed.json` on each run to keep them out of git (re-run `./install.sh ai` if a Herdr update makes new shipped items show up in `git status`)
+  - When the folders are first linked while Herdr is running, restart Herdr once; until then it doesn't pick up edits live
   - Agent status comes from OSC 7501, which pi and Claude Code report natively; no extra integration needed
 - **Claude Code** - Anthropic's AI coding assistant CLI
 - **pi** - AI coding agent (pi.dev)

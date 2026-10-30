@@ -1,0 +1,12 @@
+{
+  "$schema": "https://unpkg.com/@aliou/pi-guardrails@0.21.0/schema.json",
+  "pathAccess": {
+    "allowedPaths": [
+      {
+        "kind": "file",
+        "path": "/tmp/lt.json"
+      }
+    ]
+  },
+  "version": "0.21.0"
+}
